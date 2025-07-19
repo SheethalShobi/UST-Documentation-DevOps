@@ -1,0 +1,47 @@
+
+## Git Basics
+
+git init                 : Initialize a new git repository in the current folder
+git clone <url>          : Clone an existing repository 
+git status               : Shows the status of changes (staged, unstaged, untracked)
+git add <file>           : Add a file to the staging area
+git add .                : Add all changes in the current directory to staging
+git commit -m "message"  : Commit staged changes with a message
+git log                  : Shows the commit history
+git diff                 : View unstaged changes
+git diff --staged        : View staged changes
+
+## Branching and Merging 
+
+git branch               : List all branches
+git branch <name>        : Create a new branch
+git checkout <branchname>      : Switch to a branch
+git checkout -b <branchname>   : Create and switch to a new branch
+git merge <branchname>       : Merge a branch into the current branch
+git branch -d <branchname>     : Delete a branch
+
+## Working with Remote Repositories
+
+git remote add origin <url>   : Add a remote repository
+git push origin <branchname>      : Push changes to remote repository
+git pull origin <branchname>      : Fetch and merge from remote repository
+git fetch                     : Fetch changes from remote (without merge)
+
+## Undoing Changes
+
+git reset <file>              : Unstage a file
+git reset --hard              : Discard all local changes
+git checkout -- <file>        : Discard changes in a file
+git revert <commit>           : Create a new commit to undo changes of a specific commit
+
+## Stashing 
+
+git stash                     : Save uncommitted changes for later
+git stash apply               : Re-apply stashed changes
+git stash list                : View stash list
+
+## Others
+ 
+git config --global user.name "Name"         : Set global username
+git config --global user.email "email"       : Set global email
+git config --list                            : Show current configuration
