@@ -10,6 +10,9 @@ Docker is an open platform for developing, shipping, and running applications as
 - **Immutability**
 
 ---
+##Installation
+curl -fsSL https://get.docker.com -o get-docker.sh
+sudo sh get-docker.sh
 
 ## Container
 
