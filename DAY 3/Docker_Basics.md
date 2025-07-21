@@ -25,7 +25,7 @@ A **container** is a standard unit of software that encapsulates everything need
 
 ---
 
-## 📦 Important Docker Concepts
+##  Important Docker Concepts
 
 ### 1. Docker Image
 - An **immutable executable snapshot** of an application
@@ -67,11 +67,11 @@ A **container** is a standard unit of software that encapsulates everything need
 
 ---
 
-# Dockerfile Essentials
+# Dockerfile 
 
 A **Dockerfile** is a script containing a series of **step-by-step instructions** that Docker uses to build an image of your application.
 
-## Syntax Tips
+
 
 - Use `#` to write comments and explain each step
 
@@ -85,8 +85,19 @@ A **Dockerfile** is a script containing a series of **step-by-step instructions*
 | RUN        | Executes commands while building the image | `RUN pip install -r requirements.txt` |
 | EXPOSE     | Informs Docker which port the container will use | `EXPOSE 8000` |
 
-### Copy Breakdown
+
 
 ```dockerfile
 COPY requirements.txt .
 COPY . .
+# First line copies just the requirements file
+# Second line copies everything else
+
+## Create a .dockerignore file to exclude unnecessary files.
+
+### Multi -stage builds
+Multi-stage builds let you use multiple FROM statements in one Dockerfile. 
+Why Use Multi-Stage Builds?
+Smaller final images 
+Better security 
+Cleaner separation 
