@@ -67,7 +67,9 @@ A **container** is a standard unit of software that encapsulates everything need
 
 - **Hypervisor**: Software like VirtualBox or VMware used to create and manage VMs.
 - **Docker Engine**: Written to run on the **Linux kernel** and manages containers.
-
+- **Restart the Container**:docker start -ai vol_container
+a attaches you to the container 
+i makes it interactive
 ---
 
 # Dockerfile 
