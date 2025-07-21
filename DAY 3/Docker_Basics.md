@@ -35,7 +35,6 @@ A **container** is a standard unit of software that encapsulates everything need
 - An **immutable executable snapshot** of an application
 - Contains:
   - Application source code
-  - Runtime
   - Libraries & dependencies
   - Environment variables & configuration
 
@@ -119,6 +118,9 @@ Create a `.dockerignore` file to exclude unnecessary files.
 - **Cleaner separation**
 
 ---
+
+### Docker Volume
+** Volumes are like external hard drives that Docker manages for you. They're stored in a special Docker area on your computer.
 
 ## The Problem with Container Storage
 
