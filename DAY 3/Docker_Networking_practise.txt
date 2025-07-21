@@ -1,0 +1,133 @@
+ubuntu@ip-172-31-14-58:~$ sudo docker network create demo_bridge
+70d21454e9c08848a44fc04af4aabdf6e6767043cbc27639f186248f54c3e989
+ubuntu@ip-172-31-14-58:~$ sudo docker run -dit --name web1 --network demo_bridge nginx
+docker: Error response from daemon: Conflict. The container name "/web1" is already in use by container "364d1f510f4b267650e2ebcaf025149d86f75eb6cbd6a517fa5539fd5868cc4c". You have to remove (or rename) that container to be able to reuse that name.
+
+Run 'docker run --help' for more information
+ubuntu@ip-172-31-14-58:~$ sudo docker run -dit --name app1 --network demo_bridge nginx
+c580f1fcba526d522e1ba61ae423129197030aff6615d7fc4df5c7f9641d12e7
+ubuntu@ip-172-31-14-58:~$ sudo docker run -dit --name app2 --network demo_bridge nginx
+5036058b2cc4d463c72ad2833d971c2fa3568e0cd7096a9798531c1ef698702e
+ubuntu@ip-172-31-14-58:~$ docker network ls
+permission denied while trying to connect to the Docker daemon socket at unix:///var/run/docker.sock: Get "http://%2Fvar%2Frun%2Fdocker.sock/v1.51/networks": dial unix /var/run/docker.sock: connect: permission denied
+ubuntu@ip-172-31-14-58:~$ sudo docker network ls
+NETWORK ID     NAME          DRIVER    SCOPE
+43b67d1fa26f   bridge        bridge    local
+3052090a5d48   bridge_demo   bridge    local
+70d21454e9c0   demo_bridge   bridge    local
+8f0b755136ae   host          host      local
+bc114ae2d6da   none          null      local
+ubuntu@ip-172-31-14-58:~$ sudo docker network inspect demo_bridge
+[
+    {
+        "Name": "demo_bridge",
+        "Id": "70d21454e9c08848a44fc04af4aabdf6e6767043cbc27639f186248f54c3e989",
+        "Created": "2025-07-21T08:21:45.64796346Z",
+        "Scope": "local",
+        "Driver": "bridge",
+        "EnableIPv4": true,
+        "EnableIPv6": false,
+        "IPAM": {
+            "Driver": "default",
+            "Options": {},
+            "Config": [
+                {
+                    "Subnet": "172.19.0.0/16",
+                    "Gateway": "172.19.0.1"
+                }
+            ]
+        },
+        "Internal": false,
+        "Attachable": false,
+        "Ingress": false,
+        "ConfigFrom": {
+            "Network": ""
+        },
+        "ConfigOnly": false,
+        "Containers": {
+            "5036058b2cc4d463c72ad2833d971c2fa3568e0cd7096a9798531c1ef698702e": {
+                "Name": "app2",
+                "EndpointID": "5c15e9ebe871006e9dff1a97706b74ed067f12959d2406a824a20f42f180c86c",
+                "MacAddress": "26:9f:fb:33:e7:68",
+                "IPv4Address": "172.19.0.3/16",
+                "IPv6Address": ""
+            },
+            "c580f1fcba526d522e1ba61ae423129197030aff6615d7fc4df5c7f9641d12e7": {
+                "Name": "app1",
+                "EndpointID": "2aa4e00b3547372a46ad56cdfe0f9a75cebf20f85a7908bacc0c41021679e1c9",
+                "MacAddress": "5e:97:7e:95:30:a3",
+                "IPv4Address": "172.19.0.2/16",
+                "IPv6Address": ""
+            }
+        },
+        "Options": {},
+        "Labels": {}
+    }
+]
+ubuntu@ip-172-31-14-58:~$ sudo docker exec -it app1 ping app2
+OCI runtime exec failed: exec failed: unable to start container process: exec: "ping": executable file not found in $PATH: unknown
+
+Error:
+You're running the ping command inside an Nginx container, and Nginx images don’t include basic Linux utilities like ping by default.
+
+Solution: 
+1)Use a base image that has ping, like alpine or busybox.
+
+2)Install ping inside Alpine
+---
+docker run -dit --name app1 alpine
+docker run -dit --name app2 alpine
+---
+
+3)Ping using IP (for default bridge)
+----
+docker inspect app2 | grep IPAddress
+docker exec -it app1 ping <app2-ip>
+----
+
+Output
+ubuntu@ip-172-31-14-58:~$ sudo docker exec -it app1 ping app2
+OCI runtime exec failed: exec failed: unable to start container process: exec: "ping": executable file not found in $PATH: unknown
+ubuntu@ip-172-31-14-58:~$ ^C
+ubuntu@ip-172-31-14-58:~$ sudo docker rm -f app1 app2
+app1
+app2
+ubuntu@ip-172-31-14-58:~$ sudo docker run -dit --name app1 alpine
+
+Unable to find image 'alpine:latest' locally
+latest: Pulling from library/alpine
+9824c27679d3: Pull complete
+Digest: sha256:4bcff63911fcb4448bd4fdacec207030997caf25e9bea4045fa6c8c44de311d1
+Status: Downloaded newer image for alpine:latest
+c029d1901c7bbd76c7de49593c768ec5e02a3a7c4b83191401a4fc5e2f60f063
+ubuntu@ip-172-31-14-58:~$ sudo docker run -dit --name app2 alpine
+89488ae845290f99aeb7ef6b6e16bce383f32d2807f682d2492223880201e2d3
+ubuntu@ip-172-31-14-58:~$ sudo docker exec -it app1 apk add iputils
+fetch https://dl-cdn.alpinelinux.org/alpine/v3.22/main/x86_64/APKINDEX.tar.gz
+fetch https://dl-cdn.alpinelinux.org/alpine/v3.22/community/x86_64/APKINDEX.tar.gz
+(1/6) Installing libcap2 (2.76-r0)
+(2/6) Installing iputils-arping (20240905-r0)
+(3/6) Installing iputils-clockdiff (20240905-r0)
+(4/6) Installing iputils-ping (20240905-r0)
+(5/6) Installing iputils-tracepath (20240905-r0)
+(6/6) Installing iputils (20240905-r0)
+Executing busybox-1.37.0-r18.trigger
+OK: 8 MiB in 22 packages
+ubuntu@ip-172-31-14-58:~$ sudo docker inspect app2 | grep IPAddress
+            "SecondaryIPAddresses": null,
+            "IPAddress": "172.17.0.3",
+                    "IPAddress": "172.17.0.3",
+ubuntu@ip-172-31-14-58:~$ sudo docker exec -it app1 ping <app2-ip>
+-bash: syntax error near unexpected token `newline'
+ubuntu@ip-172-31-14-58:~$ sudo docker exec -it app1 ping 172.17.0.3
+PING 172.17.0.3 (172.17.0.3) 56(84) bytes of data.
+64 bytes from 172.17.0.3: icmp_seq=1 ttl=64 time=0.047 ms
+64 bytes from 172.17.0.3: icmp_seq=2 ttl=64 time=0.045 ms
+--- 172.17.0.3 ping statistics ---
+184 packets transmitted, 184 received, 0% packet loss, time 187405ms
+rtt min/avg/max/mdev = 0.036/0.040/0.052/0.003 ms
+
+
+
+
+
