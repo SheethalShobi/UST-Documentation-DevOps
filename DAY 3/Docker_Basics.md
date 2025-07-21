@@ -11,7 +11,7 @@ Container:
 A standard unit of software that encapsulates everything needed to build, ship, and run applications.
 Characteristics:
 Virtualizes the OS
- Lightweight
+Lightweight
 Fast, isolated, secure, uses less memory
 Potability
 Lower deployment time
