@@ -97,8 +97,6 @@ COPY . .
 # Second line copies everything else
 ```
 ----
-# Docker Notes
-
 ---
 
 ## .dockerignore
@@ -120,7 +118,36 @@ Create a `.dockerignore` file to exclude unnecessary files.
 ---
 
 ### Docker Volume
-** Volumes are like external hard drives that Docker manages for you. They're stored in a special Docker area on your computer.
+Volumes are like external hard drives that Docker manages for you. They're stored in a special Docker area on your computer.
+
+# Create a volume
+docker volume create database_data
+
+# Use the volume in a container
+docker run -v database_data:/var/lib/mysql mysql
+
+# Bind mount
+docker run -v /host/path:/container/path myimage
+
+# Named volume
+docker run -v volume_name:/container/path myimage
+
+# List all volumes
+docker volume ls
+
+# Create a volume
+docker volume create my_volume
+
+# Get detailed information
+docker volume inspect my_volume
+
+# Remove a volume
+docker volume rm my_volume
+
+# Remove all unused volumes
+docker volume prune
+
+
 
 ## The Problem with Container Storage
 
