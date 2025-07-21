@@ -66,3 +66,27 @@ A **container** is a standard unit of software that encapsulates everything need
 - **Docker Engine**: Written to run on the **Linux kernel** and manages containers.
 
 ---
+
+# Dockerfile Essentials
+
+A **Dockerfile** is a script containing a series of **step-by-step instructions** that Docker uses to build an image of your application.
+
+## Syntax Tips
+
+- Use `#` to write comments and explain each step
+
+## Common Dockerfile Instructions
+
+| Instruction | Purpose | Example |
+|------------|---------|---------|
+| FROM       | Sets the base image | `FROM python:3.11-slim` |
+| WORKDIR    | Sets the working directory inside the container | `WORKDIR /app` |
+| COPY       | Copies files from your system to the container | `COPY requirements.txt .` <br> `COPY . .` |
+| RUN        | Executes commands while building the image | `RUN pip install -r requirements.txt` |
+| EXPOSE     | Informs Docker which port the container will use | `EXPOSE 8000` |
+
+### Copy Breakdown
+
+```dockerfile
+COPY requirements.txt .
+COPY . .
