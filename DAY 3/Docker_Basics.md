@@ -92,12 +92,52 @@ COPY requirements.txt .
 COPY . .
 # First line copies just the requirements file
 # Second line copies everything else
-
+```
+----
 ## Create a .dockerignore file to exclude unnecessary files.
 
 ### Multi -stage builds
-Multi-stage builds let you use multiple FROM statements in one Dockerfile. 
-Why Use Multi-Stage Builds?
-Smaller final images 
-Better security 
-Cleaner separation 
+**Multi-stage builds let you use multiple FROM statements in one Dockerfile. 
+**Why Use Multi-Stage Builds?
+**Smaller final images 
+**Better security 
+**Cleaner separation 
+
+# The Problem with Container Storage is that when you run a Docker container, any data you create inside it disappears when the container stops( ephemeral storage - temporary and not persistent)
+## Solutions:
+**Bind Mounts - creating a direct connection between a folder on your computer and a folder inside the container.
+How it works:
+**pick a folder on your host machine (like /home/user/myapp)
+**connect it to a folder inside the container (like /app) and both folders now show the same files
+
+### Docker Networking
+## Why Docker Networking matters when you have multiple containers and they need to communicate with each other. 
+# 1)Bridge network 
+-- having a private network inside your computer where containers can talk to each other.
+## Comparison: Default Bridge vs Custom Bridge
+
+| Feature                      | Default Bridge Network                                     | Custom Bridge Network                                           |
+|-----------------------------|-------------------------------------------------------------|-----------------------------------------------------------------|
+| Communication               | All containers can communicate with each other             | Only containers you specify can communicate                    |
+| Isolation                   | Not very secure because there's no isolation               | More secure with better isolation                              |
+| Addressing                  | Containers reach each other using IP addresses             | Containers can reach each other using names (not just IPs)     |
+
+# 2)Host network
+-- The container uses your computer's network directly - container is running directly on the machine
+
+# 3)Overlay NetworkUsed 
+-- when containers running on multiple computers that need to communicate
+-- Better performance,no port mapping needed, less secure and portable
+
+# Docker Network Commands
+
+| Action                          | Command                                             |
+|---------------------------------|-----------------------------------------------------|
+| List networks                   | `docker network ls`                                 |
+| Create a new network            | `docker network create my_network`                 |
+| Inspect details of a network    | `docker network inspect my_network`                |
+| Connect a container to network  | `docker network connect my_network my_container`   |
+| Disconnect container from network | `docker network disconnect my_network my_container` |
+
+---
+
