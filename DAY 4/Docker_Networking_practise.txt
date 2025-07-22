@@ -1,3 +1,5 @@
+Tried learning Docker networking using custom bridge
+
 ubuntu@ip-172-31-14-58:~$ sudo docker network create demo_bridge
 70d21454e9c08848a44fc04af4aabdf6e6767043cbc27639f186248f54c3e989
 ubuntu@ip-172-31-14-58:~$ sudo docker run -dit --name web1 --network demo_bridge nginx
