@@ -21,11 +21,11 @@ wait until all pods changes to "1/1" or "2/2" "Running"
 ```
 kubectl describe node | grep -i taint
 ```
-copy the taint 
+copying the taint 
 ```
 kubectl get node 
 ```
-copy the name 
+copying the name 
 ```
 kubectl taint node <node name from above command> node-role.kubernetes.io/control-plane:NoSchedule-
 ```
@@ -38,7 +38,7 @@ kubectl get po
 ```
 kubectl get po -o wide
 ```
-note the ip 
+note down the ip 
 ```
 curl <ip>
 ```
