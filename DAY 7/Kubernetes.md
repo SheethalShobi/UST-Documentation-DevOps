@@ -56,28 +56,43 @@ talks to API server,which then to scheduler - etcd via API server, which ultimat
 ```
 hostnamectl set-hostname kmaster
 ```
-→ Sets the system hostname to kmaster.
+ Sets the system hostname to kmaster.
 ```
 kubeadm init
 ```
-→ Initializes the Kubernetes control-plane (master) node.
+ Initializes the Kubernetes control-plane (master) node.
 ```
 kubectl apply -f https://github.com/weaveworks/weave/releases/download/v2.8.1/weave-daemonset-k8s.yaml
 ```
-→ Deploys the Weave Net CNI plugin for Kubernetes networking.
+ Deploys the Weave Net CNI plugin for Kubernetes networking.
 ```
 watch -n 1 kubectl get po -n kube-system
 ```
-→ Continuously monitors the status of system pods in the kube-system namespace every 1 second.
+ Continuously monitors the status of system pods in the kube-system namespace every 1 second.
 ```
 kubectl run vilaspod --image=nginx
 ```
-→ Creates a pod named vilaspod using the Nginx image.
+ Creates a pod named vilaspod using the Nginx image.
 ```
 kubectl get pod -o wide
 ```
-→ Lists all pods with extra info like node name and IP.
+ Lists all pods with extra info like node name and IP.
 ```
 curl <ip>
 ```
-→ Sends a web request to the pod's IP to verify if the Nginx server is accessible. 
+ Sends a web request to the pod's IP to verify if the Nginx server is accessible. 
+```
+kubetcl get pod/rs/deploy
+```
+```
+kubectl describe pod
+```
+```
+kubectl apply -f ng-pod.yaml/replicaset.yaml/deploy.yaml
+```
+```
+kubectl delete pod -all
+```
+```
+kubectl delete -f replicaset.yaml
+```
