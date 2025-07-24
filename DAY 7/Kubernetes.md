@@ -70,7 +70,7 @@ watch -n 1 kubectl get po -n kube-system
 ```
  Continuously monitors the status of system pods in the kube-system namespace every 1 second.
 ```
-kubectl run vilaspod --image=nginx
+kubectl run podname --image=nginx
 ```
  Creates a pod named vilaspod using the Nginx image.
 ```
