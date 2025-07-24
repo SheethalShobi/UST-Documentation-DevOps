@@ -2,7 +2,7 @@
 While Docker runs containers on a single machine, Kubernetes manages containers across multiple machines, making sure they stay healthy, can handle traffic, and automatically recover from failures.
 
 #### Kubernetes Objects
-- **Pod: The smallest unit that runs your container
+- Pod: The smallest unit that runs your container
 - **ReplicaSet: Ensures you have the right number of pods running
 - **Deployment: Manages ReplicaSets and handles updates
 - **Service: Provides a stable way to access your pods
