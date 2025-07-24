@@ -72,7 +72,7 @@ watch -n 1 kubectl get po -n kube-system
 ```
 kubectl run podname --image=nginx
 ```
- Creates a pod named vilaspod using the Nginx image.
+ Creates a pod named mypod using the Nginx image.
 ```
 kubectl get pod -o wide
 ```
@@ -96,3 +96,5 @@ kubectl delete pod -all
 ```
 kubectl delete -f replicaset.yaml
 ```
+##### Replicaset
+- A ReplicaSet ensures that a specified number of pod replicas are running at any given time. If a pod crashes or is deleted, the ReplicaSet automatically creates a new one.
