@@ -50,5 +50,5 @@ talks to API server,which then to scheduler - etcd via API server, which ultimat
 ##### Worker node has :
 
 - Kubelet (talks to API server and then API server does 4 things mainly: AUTHORIZE,AUTHENTICATE,VALIDATE, talks to ETCD)
-- **Kubeproxy ( for networking all nodes)
-- **Container Runtime [CRI]
+- Kubeproxy ( for networking all nodes)
+- Container Runtime [CRI]
