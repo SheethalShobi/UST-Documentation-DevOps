@@ -19,3 +19,11 @@ spec:
         image: nginx
         ports:
         - containerPort: 80
+
+replicas: 3: Always keep 3 pods running
+selector: How to identify which pods belong to this ReplicaSet
+template: The blueprint for creating new pods
+
+Create the ReplicaSet: kubectl apply -f replicaset.yaml
+Check the pods: kubectl get pods
+kubectl get replicaset
