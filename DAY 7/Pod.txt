@@ -10,3 +10,13 @@ spec:
       image: nginx
       ports:
         - containerPort: 80
+
+
+apiVersion: v1: Which version of Kubernetes API to use
+kind: Pod: What type of object this is
+metadata: Information about the pod (name, labels)
+spec: The actual specification of what the pod should contain
+
+Create the pod: kubectl apply -f pod.yaml
+Check if it's running: kubectl get pods
+
