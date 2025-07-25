@@ -1,13 +1,9 @@
 Tried creating a pod
 
 ubuntu@kmaster:~$ kubectl apply -f pod.yaml
-error: the path "pod.yaml" does not exist
 ubuntu@kmaster:~$ kubectl get pods
 No resources found in default namespace.
 ubuntu@kmaster:~$ nano pod.yaml
-ubuntu@kmaster:~$ nano pod.yaml
-ubuntu@kmaster:~$ kubectl apply -f mypod.yaml
-error: the path "mypod.yaml" does not exist
 ubuntu@kmaster:~$ kubectl apply -f pod.yaml
 pod/my-nginx-pod created
 ubuntu@kmaster:~$ kubectl get pods -o wide
