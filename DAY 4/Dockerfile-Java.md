@@ -34,7 +34,8 @@ docker build -t java-hello .
 ```
 ### Running Docker Container
 ```
-docker run --rm java-hello`
+docker run --rm java-hello
+```
 ### Output
 ```
 Hello from Dockerized Java on EC2!
