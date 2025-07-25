@@ -9,17 +9,4 @@ latest: Pulling from library/ubuntu
 32f112e3802c: Pull complete
 Digest: sha256:a08e551cb33850e4740772b38217fc1796a66da2506d312abe51acda354ff061
 Status: Downloaded newer image for ubuntu:latest
-root@102ae678abba:/# sudo echo "Hello from volume" > /data/hello.txt
-exit
-bash: sudo: command not found
-exit
-ubuntu@ip-172-31-14-58:~$ sudo docker exec -it vol_container bash
-Error response from daemon: container 102ae678abba0db4120ee83bba0e35abc7c8b88d476bb5dc1bf13f303cd3eece is not running
-ubuntu@ip-172-31-14-58:~$ sudo docker exec -it vol_container bash
-Error response from daemon: container 102ae678abba0db4120ee83bba0e35abc7c8b88d476bb5dc1bf13f303cd3eece is not running
-ubuntu@ip-172-31-14-58:~$ sudo docker start -ai vol_container
-root@102ae678abba:/# sudo docker exec -it vol_container bash
-bash: sudo: command not found
-root@102ae678abba:/# echo "Hello from volume" > /data/hello.txt
-exit
 exit
