@@ -7,6 +7,11 @@ kubeadm init
 kubectl get node
 ```
 will show the node in "NotReady" status
+```
+mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+```
 
 #### Setting up the necessary network layer for Pods to communicate.
 
@@ -25,7 +30,7 @@ copying the taint
 ```
 kubectl get node 
 ```
-copying the name 
+copying the name  of node 
 ```
 kubectl taint node <node name from above command> node-role.kubernetes.io/control-plane:NoSchedule-
 ```
