@@ -1,0 +1,77 @@
+A Service in Kubernetes is a stable network abstraction that exposes Pods.
+It provides a permanent IP/DNS name even if the Pods behind it change.
+Services use label selectors to match Pods.
+
+Why We Need Services?
+Pods are ephemeral - communication between Pods or from outside needs a fixed access point ===> Service  
+
+There are different types of Services based on use case:
+* ClusterIP
+  It is the default type. 
+  It exposes the Service internally within the cluster. 
+  This is mainly used for communication between different Pods or microservices.
+
+# clusterip-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-service
+spec:
+  selector:
+    app: nginx
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+  type: ClusterIP
+
+* NodePort
+  The type allows the Service to be accessed externally via a static port on each node 
+  This is useful when you want to access your application from outside the cluster (like in your browser or with curl).
+
+# nodeport-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-nodeport
+spec:
+  selector:
+    app: nginx
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+    nodePort: 30080  # External port (30000-32767)
+  type: NodePort
+
+
+* LoadBalancer 
+  It works with cloud providers (like AWS, GCP, Azure) to provision a public external load balancer, which routes traffic to the Service inside the cluster. 
+  It’s commonly used in production for publicly accessible apps.
+
+# loadbalancer-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-loadbalancer
+spec:
+  selector:
+    app: nginx
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+  type: LoadBalancer
+
+To create a basic Service manually via command line:
+kubectl run mypod --image=nginx --port=80 --labels="app=nginx"
+kubectl expose pod mypod --type=NodePort --name=nginx-service
+
+To check service details:  
+kubectl get svc
+kubectl describe svc nginx-service
+
+kubectl delete pod mypod
+kubectl delete svc nginx-service
+
+  
