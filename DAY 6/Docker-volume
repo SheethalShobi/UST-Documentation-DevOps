@@ -1,0 +1,30 @@
+root@kmaster:/home/ubuntu# docker volume create demo1
+demo1
+root@kmaster:/home/ubuntu# docker volume ls
+DRIVER    VOLUME NAME
+local     demo1
+local     myvol
+local     testvol
+root@kmaster:/home/ubuntu# docker run -it --name container1 -v demo1:/data ubuntu
+root@e381b47c902b:/# touch file.txt
+root@e381b47c902b:/# echo "Hey from inside container ">file.txt
+root@e381b47c902b:/# mv file.txt/data/
+mv: missing destination file operand after 'file.txt/data/'
+Try 'mv --help' for more information.
+root@e381b47c902b:/# mv file.txt /data/
+root@e381b47c902b:/# cat /data/file.txt
+Hey from inside container
+root@e381b47c902b:/# exit
+exit
+root@kmaster:/home/ubuntu# docker rm container1
+container1
+root@kmaster:/home/ubuntu# docker run -it -name container2 -v demo1:/data ubuntu
+^[[A^Cunknown shorthand flag: 'n' in -name
+
+Usage:  docker run [OPTIONS] IMAGE [COMMAND] [ARG...]
+
+Run 'docker run --help' for more information
+root@kmaster:/home/ubuntu# docker run -it --name container2 -v demo1:/data ubuntu
+root@b4443c93bcea:/# cat /data/file.txt
+Hey from inside container
+root@b4443c93bcea:/#
