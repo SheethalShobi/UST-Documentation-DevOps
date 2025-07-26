@@ -84,17 +84,72 @@ curl <ip>
 ```
 kubetcl get pod/rs/deploy
 ```
+Shows pods,replicasets and deployments
 ```
 kubectl describe pod
 ```
+Describes details about the pod
 ```
 kubectl apply -f ng-pod.yaml/replicaset.yaml/deploy.yaml
 ```
+Creates pod,rs.deploy
 ```
 kubectl delete pod -all
 ```
+Deleting all pods 
 ```
 kubectl delete -f replicaset.yaml
 ```
+Deleting replicasets
+
 ##### Replicaset
 - A ReplicaSet ensures that a specified number of pod replicas are running at any given time. If a pod crashes or is deleted, the ReplicaSet automatically creates a new one.
+###### Create the ReplicaSet:
+```
+kubectl apply -f replicaset.yaml
+```
+###### Check the pods:
+```
+kubectl get pods
+kubectl get replicaset
+```
+###### Testing ReplicaSet Recovery:
+```
+kubectl delete pod <pod-name>
+```
+###### Immediately check pods again
+```
+kubectl get pods
+```
+###### Scale up to 5 replicas
+```
+kubectl scale replicaset nginx-replicaset --replicas=5
+```
+###### Scale down to 2 replicas
+```
+kubectl scale replicaset nginx-replicaset --replicas=2
+```
+##### Deployment?
+- Based on the property of Autohealing 
+- A Deployment is like a smart manager that handles ReplicaSets for you.
+- It's the most commonly used object in Kubernetes because it solves the update problem.
+- Creates and manages ReplicaSets
+- Handles rolling updates with zero downtime
+- Can rollback to previous versionsProvides update history
+
+###### Create the deployment:
+```
+kubectl apply -f deployment.yaml
+```
+```
+kubectl get deployments
+kubectl get replicasets
+kubectl get pods
+```
+###### Rolling Updates: 
+to update your nginx version from 1.21 to 1.22:
+```
+kubectl set image deployment/nginx-deployment nginx=nginx:1.22
+
+kubectl rollout status deployment/nginx-deployment
+``` 
