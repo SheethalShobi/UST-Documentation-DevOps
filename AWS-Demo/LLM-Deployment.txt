@@ -1,0 +1,170 @@
+Step 1: Setup EC2 environment
+SSH into your EC2 instance, then:
+
+bash
+Copy
+Edit
+# Install AWS CLI (if needed)
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+unzip awscliv2.zip
+sudo ./aws/install
+
+# Install kubectl
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+chmod +x kubectl
+sudo mv kubectl /usr/local/bin/
+
+# Install eksctl
+curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
+sudo mv /tmp/eksctl /usr/local/bin/
+
+# Install Docker (if you want to build images)
+sudo yum update -y
+sudo amazon-linux-extras install docker
+sudo service docker start
+sudo usermod -a -G docker ec2-user
+# logout & login back to refresh group permissions
+Configure AWS CLI:
+
+bash
+Copy
+Edit
+aws configure
+# Enter your AWS access key, secret, region (e.g. us-east-2), and output format
+Step 2: Create EKS cluster with GPU nodes
+bash
+Copy
+Edit
+eksctl create cluster \
+  --name llm-cluster \
+  --region us-east-2 \
+  --nodegroup-name gpu-nodes \
+  --node-type p3.2xlarge \
+  --nodes 1 \
+  --nodes-min 1 \
+  --nodes-max 3 \
+  --managed
+Wait for the cluster and nodegroup to be ready.
+
+Step 3: Build & push LLM serving Docker image
+Create a directory on EC2, add these files:
+
+Dockerfile
+
+Dockerfile
+Copy
+Edit
+FROM python:3.9-slim
+
+RUN pip install transformers torch flask
+
+COPY app.py /app/app.py
+WORKDIR /app
+
+EXPOSE 80
+
+CMD ["python", "app.py"]
+app.py
+
+python
+Copy
+Edit
+from flask import Flask, request, jsonify
+from transformers import pipeline
+
+app = Flask(__name__)
+generator = pipeline('text-generation', model='gpt2')
+
+@app.route('/generate', methods=['POST'])
+def generate():
+    data = request.json
+    prompt = data.get('prompt', '')
+    outputs = generator(prompt, max_length=50)
+    return jsonify(outputs)
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=80)
+Build and push to ECR
+bash
+Copy
+Edit
+# Create ECR repo
+aws ecr create-repository --repository-name llm-serving --region us-east-2
+
+# Authenticate Docker to ECR
+aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin <aws_account_id>.dkr.ecr.us-east-2.amazonaws.com
+
+# Build image
+docker build -t llm-serving .
+
+# Tag image
+docker tag llm-serving:latest <aws_account_id>.dkr.ecr.us-east-2.amazonaws.com/llm-serving:latest
+
+# Push image
+docker push <aws_account_id>.dkr.ecr.us-east-2.amazonaws.com/llm-serving:latest
+Replace <aws_account_id> with your actual AWS account ID.
+
+Step 4: Deploy to EKS
+Create deployment.yaml:
+
+yaml
+Copy
+Edit
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: llm-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: llm
+  template:
+    metadata:
+      labels:
+        app: llm
+    spec:
+      containers:
+      - name: llm-container
+        image: <aws_account_id>.dkr.ecr.us-east-2.amazonaws.com/llm-serving:latest
+        ports:
+        - containerPort: 80
+        resources:
+          limits:
+            nvidia.com/gpu: 1  # If using GPU nodes and NVIDIA device plugin
+Create service.yaml:
+
+yaml
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: llm-service
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 80
+      targetPort: 80
+  selector:
+    app: llm
+Apply manifests:
+
+kubectl apply -f deployment.yaml
+kubectl apply -f service.yaml
+Step 5: Test your service
+Get the external IP:
+
+kubectl get svc llm-service
+Use curl to send prompt and get response:
+
+
+curl -X POST http://<external-ip>/generate -H "Content-Type: application/json" -d '{"prompt":"Hello world"}'
+
+Summary
+EKS cluster with GPU nodes runs your LLM serving pods
+
+Docker image built and pushed to ECR contains a simple Flask app serving GPT-2 text generation
+
+Kubernetes deployment manages your LLM service pods
+
+LoadBalancer service exposes the endpoint for external requests
