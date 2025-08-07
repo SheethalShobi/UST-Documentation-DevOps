@@ -1,0 +1,31 @@
+An IAM role is a set of permissions that can be assumed by a service (like EC2, Lambda, etc.) or a user.
+Roles are used to delegate access without using long-term credentials like access keys.
+
+For example:
+An EC2 instance might need to access S3 buckets, so you assign it a role with AmazonS3ReadOnlyAccess.
+
+How to Create an IAM Role
+🔹 Step 1: Go to IAM Console and Click Create role
+
+🔹 Step 2: Choose Trusted Entity - Choose AWS service
+  Choose a use case: e.g., EC2
+
+🔹 Step 3: Attach Permissions Policies
+Select policies to define what the role can do. 
+For example: AmazonS3ReadOnlyAccess – allows read access to S3
+            CloudWatchAgentServerPolicy – for EC2 monitoring
+            AmazonEC2FullAccess – (⚠️ not recommended unless needed)
+
+🔹 Step 4: Name the Role
+Name your role something clear like: EC2-S3AccessRole
+(Optional) Add a description or tags
+Click Create role
+
+🔹 Step 5: Attach Role to EC2 Instance
+Go to EC2 Console
+Click Instances
+Select your instance
+Click Actions > Security > Modify IAM Role
+Choose the role you just created
+Click Update IAM role
+
