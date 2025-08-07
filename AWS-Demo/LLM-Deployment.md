@@ -1,4 +1,101 @@
-## 🔍 Key Differences: LLM Deployment vs Normal Deployment
+
+# AWS Infrastructure for LLM Deployment
+
+Deploying a large language model (LLM) and its applications on AWS requires a well-architected infrastructure that is robust, scalable, and secure. A common and highly flexible approach is to use **Amazon EKS (Elastic Kubernetes Service)** to manage the containerized applications, as it provides a powerful platform for orchestrating and scaling resources, especially those with specialized hardware like GPUs.
+
+---
+
+## 1. Amazon EKS Cluster Provisioning
+
+An EKS cluster is the core of your infrastructure. It provides the control plane for your Kubernetes environment.
+
+### Creating an EKS cluster
+
+You can use either:
+- **eksctl** (preferred for Infrastructure as Code)
+- **AWS Console** (preferred for hands-on GUI)
+
+#### eksctl
+`eksctl` is a command-line tool to simplify EKS cluster creation. It allows:
+- Reusable YAML configurations
+- Version control of infra
+- Quick and consistent provisioning
+
+#### AWS Console
+- GUI-based cluster creation for beginners or exploration.
+- Helpful to understand the components visually.
+
+### Configuring Node Groups (with GPU support)
+
+LLMs need powerful compute (GPUs) for inference.
+
+- Use **GPU-optimized EC2 instances** (e.g., `g5`, `p4d`)
+- Prefer **Managed Node Groups (MNGs)** for ease of updates and scaling
+
+#### Autoscaling Nodes
+Use tools like:
+- **Karpenter** or
+- **Cluster Autoscaler**
+
+To:
+- Scale up when workloads increase
+- Save cost by scaling down idle GPU nodes
+
+---
+
+## 2. Identity and Access Management (IAM)
+
+IAM controls access across AWS.
+
+### IAM Roles for Service Accounts (IRSA)
+
+IRSA allows Pods to assume specific IAM roles instead of giving all permissions to the EC2 node.
+
+- Enhances security with least privilege
+- Pod uses a **service account** that maps to an IAM role
+
+### Defining IAM Policies
+
+Attach only necessary permissions to your LLM components:
+
+- **Amazon S3**: Read/write model data or logs
+- **CloudWatch**: Log metrics and inference stats
+- **DynamoDB/RDS**: Database access for metadata or outputs
+- **Lambda**: For async post-processing functions
+
+---
+
+## 3. Networking
+
+Networking is crucial for security and accessibility.
+
+### VPC Design
+
+- Use both **Public** and **Private subnets**
+  - **Public Subnets**: Load Balancers, NAT Gateway
+  - **Private Subnets**: GPU-based EKS worker nodes
+
+### Routing Tables
+
+- Private subnets → NAT Gateway (outbound access only)
+- Public subnets → Internet Gateway (inbound/outbound)
+
+### Security Groups
+
+- **EKS Nodes**: Allow traffic only from trusted sources (LB, cluster)
+- **Load Balancers**: Allow 443 (HTTPS) for app access
+
+### VPC Endpoints
+
+Use VPC Endpoints for private communication with AWS services like S3, DynamoDB:
+- No internet exposure
+- Traffic stays within AWS
+
+---
+
+This infrastructure enables **secure, scalable, cost-effective** deployment of large-scale LLM applications.
+
+##  Key Differences: LLM Deployment vs Normal Deployment
 
 | Aspect | Normal Web/App Deployment | LLM Deployment |
 |--------|----------------------------|----------------|
@@ -15,7 +112,7 @@
 
 ---
 
-## 🧠 Why LLM Deployment is Different
+##  Why LLM Deployment is Different
 
 ### 1. Massive GPU Compute
 - CPUs cannot efficiently perform transformer-based inference.
