@@ -1,0 +1,41 @@
+🔷 1. Amazon EKS Cluster
+A fully managed Kubernetes service running in the private subnet of a VPC.
+Handles orchestration, scaling, and management of containers.
+
+Contains:
+LLM Pod: Runs the large language model (inference code).
+App Pod: Interacts with user input and routes it to LLM or AWS APIs.
+
+🔷 2. EKS Node Group
+A group of EC2 instances (worker nodes).
+May include GPU-enabled EC2 instances (like g4dn.xlarge) for LLM inference performance.
+
+🔷 3. VPC (Virtual Private Cloud)
+Isolated network environment for your infrastructure.
+Includes:
+Public Subnet: For services that need internet access (e.g., ALB).
+Private Subnet: For sensitive resources like EKS nodes and S3 access.
+
+🔷 4. IAM Roles & IRSA (IAM Roles for Service Accounts)
+Secure way for pods in EKS to access AWS services.
+Example:
+LLM pod → can read model from S3 using assigned IAM role.
+App pod → can use Boto3 SDK to access Lambda, EC2, etc.
+
+🔷 5. S3 Bucket
+Used for storing:
+Pre-trained or fine-tuned LLM model weights.
+Processed training data or logs if needed.
+
+🔷 6. Security Groups
+Act as firewalls controlling traffic:
+Allow traffic between pods, load balancer, and external users.
+
+🔷 7. Route Tables
+Determine how traffic flows between public and private subnets.
+Ensure only required traffic reaches sensitive nodes in private subnet.
+
+🔷 8. Application Load Balancer (ALB)
+Sits in the public subnet.
+Routes incoming HTTP(S) traffic to the right Kubernetes service (e.g., app pod).
+Enables external access to the app frontend or API.
