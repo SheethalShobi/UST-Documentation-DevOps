@@ -1,0 +1,181 @@
+# Creating vpc 
+
+```
+aws ec2 create-vpc \
+  --cidr-block 10.0.0.0/16 \
+  --tag-specifications 'ResourceType=vpc,Tags=[{Key=Name,Value=MyVPC}]'
+```
+```
+{
+    "Vpc": {
+        "OwnerId": "267092042432",
+        "InstanceTenancy": "default",
+        "Ipv6CidrBlockAssociationSet": [],
+        "CidrBlockAssociationSet": [
+            {
+                "AssociationId": "vpc-cidr-assoc-0f8675ddba3e8a163",
+                "CidrBlock": "10.0.0.0/16",
+                "CidrBlockState": {
+                    "State": "associated"
+                }
+            }
+        ],
+        "IsDefault": false,
+        "Tags": [
+            {
+                "Key": "Name",
+                "Value": "MyVPC"
+            }
+        ],
+        "VpcId": "vpc-09213515d9e5cbc58",
+        "State": "pending",
+```
+
+To find vpc id
+```
+aws ec2 describe-vpcs --output table
+```
+vpc-0a8f5ec4835d44c29
+
+```
+aws ec2 modify-vpc-attribute \
+  --vpc-id vpc-0a8f5ec4835d44c29 \
+  --enable-dns-hostnames
+```
+
+Create Public Subnet
+```
+aws ec2 create-subnet \
+  --vpc-id vpc-0a8f5ec4835d44c29 \
+  --cidr-block 10.0.1.0/24 \
+  --availability-zone us-east-2a \
+  --tag-specifications 'ResourceType=subnet,Tags=[{Key=Name,Value=MyPublicSubnet}]'
+```
+```
+~ $ aws ec2 create-subnet \
+>   --vpc-id vpc-0a8f5ec4835d44c29 \
+>   --cidr-block 10.0.1.0/24 \
+>   --availability-zone us-east-2a \
+>   --tag-specifications 'ResourceType=subnet,Tags=[{Key=Name,Value=MyPublicSubnet}]'
+
+An error occurred (InvalidSubnet.Conflict) when calling the CreateSubnet operation: The CIDR '10.0.1.0/24' conflicts with another subnet
+~ $ aws ec2 describe-subnets --filters Name=vpc-id,Values=vpc-0a8f5ec4835d44c29 --query "Subnets[*].{ID:SubnetId,CIDR:CidrBlock}" --output table
+-----------------------------------------------
+|               DescribeSubnets               |
++----------------+----------------------------+
+|      CIDR      |            ID              |
++----------------+----------------------------+
+|  10.0.16.0/20  |  subnet-033f4425975193f47  |
+|  10.0.144.0/20 |  subnet-0e6daf3a387338f07  |
+|  10.0.32.0/20  |  subnet-026be51748520516e  |
+|  10.0.0.0/20   |  subnet-02141d43445c62821  |
+|  10.0.128.0/20 |  subnet-07610047387d3fcb7  |
++----------------+----------------------------+
+~ $ aws ec2 create-subnet \
+>   --vpc-id vpc-0a8f5ec4835d44c29 \
+>   --cidr-block 10.0.48.0/20 \
+>   --availability-zone us-east-2a \
+>   --tag-specifications 'ResourceType=subnet,Tags=[{Key=Name,Value=MyPublicSubnet}]'
+{
+    "Subnet": {
+        "AvailabilityZoneId": "use2-az1",
+        "MapCustomerOwnedIpOnLaunch": false,
+        "OwnerId": "267092042432",
+        "AssignIpv6AddressOnCreation": false,
+        "Ipv6CidrBlockAssociationSet": [],
+        "Tags": [
+            {
+                "Key": "Name",
+                "Value": "MyPublicSubnet"
+            }
+        ],
+        "SubnetArn": "arn:aws:ec2:us-east-2:267092042432:subnet/subnet-0b47ac4f5fee678db",
+        "EnableDns64": false,
+        "Ipv6Native": false,
+        "PrivateDnsNameOptionsOnLaunch": {
+            "HostnameType": "ip-name",
+            "EnableResourceNameDnsARecord": false,
+            "EnableResourceNameDnsAAAARecord": false
+:
+```
+```
+~ $ aws ec2 create-internet-gateway --tag-specifications 'ResourceType=internet-gateway,Tags=[{Key=Name,Value=MyIGW}]'
+{
+    "InternetGateway": {
+        "Attachments": [],
+        "InternetGatewayId": "igw-0439d892ad397f0ba",
+        "OwnerId": "267092042432",
+        "Tags": [
+            {
+                "Key": "Name",
+                "Value": "MyIGW"
+            }
+        ]
+    }
+}
+```
+aws ec2 attach-internet-gateway --vpc-id vpc-0a8f5ec4835d44c29 --internet-gateway-id igw-0439d892ad397f0ba
+```
+```
+~ $ aws ec2 attach-internet-gateway --vpc-id vpc-0a8f5ec4835d44c29 --internet-gateway-id igw-0439d892ad397f0ba
+
+An error occurred (InvalidParameterValue) when calling the AttachInternetGateway operation: Network vpc-0a8f5ec4835d44c29 already has an internet gateway attached
+~ $ aws ec2 describe-internet-gateways --filters Name=attachment.vpc-id,Values=vpc-0a8f5ec4835d44c29 --query "InternetGateways[*].InternetGatewayId" --output text
+igw-0f7ca5ce69686de68
+~ $ aws ec2 create-route-table --vpc-id vpc-0a8f5ec4835d44c29 --tag-specifications 'ResourceType=route-table,Tags=[{Key=Name,Value=PublicRouteTable}]'
+{
+    "RouteTable": {
+        "Associations": [],
+        "PropagatingVgws": [],
+        "RouteTableId": "rtb-027a5893497062aaf",
+        "Routes": [
+            {
+                "DestinationCidrBlock": "10.0.0.0/16",
+                "GatewayId": "local",
+                "Origin": "CreateRouteTable",
+                "State": "active"
+            }
+        ],
+        "Tags": [
+            {
+                "Key": "Name",
+                "Value": "PublicRouteTable"
+            }
+        ],
+        "VpcId": "vpc-0a8f5ec4835d44c29",
+:
+```
+```
+~ $ aws ec2 create-route \
+>   --route-table-id rtb-027a5893497062aaf \
+>   --destination-cidr-block 0.0.0.0/0 \
+>   --gateway-id igw-0f7ca5ce69686de68
+{
+    "Return": true
+}
+```
+```
+aws ec2 associate-route-table \
+  --subnet-id 10.0.48.0/20\
+  --route-table-id rtb-027a5893497062aaf
+```
+
+```
+~ $ aws ec2 associate-route-table \
+>   --subnet-id 10.0.48.0/20\
+>   --route-table-id rtb-027a5893497062aaf
+
+An error occurred (InvalidSubnetID.NotFound) when calling the AssociateRouteTable operation: The subnet ID '10.0.48.0/20' does not exist
+~ $ aws ec2 describe-subnets --filters Name=vpc-id,Values=vpc-0a8f5ec4835d44c29 --query "Subnets[?CidrBlock=='10.0.48.0/20'].SubnetId" --output text
+subnet-0b47ac4f5fee678db
+~ $ aws ec2 associate-route-table \
+>   --subnet-id subnet-0b47ac4f5fee678db \
+>   --route-table-id rtb-027a5893497062aaf
+{
+    "AssociationId": "rtbassoc-0827c905d55dc0592",
+    "AssociationState": {
+        "State": "associated"
+    }
+}
+```
+```
