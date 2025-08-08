@@ -58,6 +58,22 @@ App pod → can use Boto3 SDK to access Lambda, EC2, etc.
 ```
 - Defined Policies: IAM policies are created to control access to various AWS resources, ensuring that only authorized 
 components can interact with services like EKS, S3 (for model storage), EC2, CloudWatch, and Lambda.
+
+ IRSA (IAM Roles for Service Accounts) – Traditionally, you assign an IAM role to the EC2 instance (i.e., the node) that runs your pods. This means all pods on that node share the same AWS permissions, which is insecure.
+For example:
+
+If Pod A only needs access to S3, and Pod B needs access to DynamoDB,
+Both will get access to all because they share the node’s IAM role.
+Solution: IAM Roles for Service Accounts (IRSA) With IRSA, you attach an IAM role directly to a Kubernetes service account, not the EC2 instance.
+This means: Each pod can assume a unique IAM role with only the permissions it needs. This follows the principle of least privilege, which is critical for secure cloud deployments.
+
+```
+How It Works (Conceptually):
+You create a Kubernetes service account
+You create an IAM role with a trust policy allowing that service account to assume the role
+You annotate the service account with the IAM role ARN
+Pods using that service account will get temporary AWS credentials (via STS)
+```
 ------
 ####  5. S3 Bucket
 - LLM model artifacts (the trained model files) are securely stored in an Amazon S3 bucket.
@@ -65,6 +81,21 @@ components can interact with services like EKS, S3 (for model storage), EC2, Clo
 - Used for storing:
 Pre-trained or fine-tuned LLM model weights.
 Processed training data or logs if needed.
+
+##### Why Store LLM Model Artifacts in Amazon S3?
+- Durability & Reliability Once your LLM artifacts (e.g., .pt, .bin, .json, .tokenizer) are uploaded, they're safe — even across hardware failures.
+- Scalable Storage for Large Models LLMs are HUGE – some models are tens or hundreds of GBs. S3 is infinitely scalable – you never have to worry about outgrowing space.
+- Access Anywhere in AWS
+- Version Control & Backup S3 supports versioning of files — useful when fine-tuning or updating models. S3 buckets can be accessed securely from EKS pods, Lambda functions, EC2, etc.
+
+```
+# Upload model files to S3
+aws s3 cp ./model/ s3://llm-artifacts-bucket/my-model/ --recursive
+
+# EKS pod (with proper IAM role) fetches model
+from transformers import AutoModel
+model = AutoModel.from_pretrained("s3://llm-artifacts-bucket/my-model/")
+``` 
 ------
 
 #### 6. Security Groups
