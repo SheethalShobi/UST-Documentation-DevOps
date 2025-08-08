@@ -1,5 +1,5 @@
 ####  1. Amazon EKS Cluster
-- This is the core of the deployment, providing a managed Kubernetes service that orchestrates your containerized
+- This is the core of the deployment, providing a managed service that orchestrates your containerized
 LLM application.
 - A fully managed Kubernetes service running in the private subnet of a VPC.
 - Handles orchestration, scaling, and management of containers.
