@@ -171,3 +171,35 @@ the application pods running your LLM.
 - Sits in the public subnet.
 - Routes incoming HTTP(S) traffic to the right Kubernetes service (e.g., app pod).
 - Enables external access to the app frontend or API.
+
+###  Why LLM Deployment is Different
+
+#### 1. Massive GPU Compute
+- CPUs cannot efficiently perform transformer-based inference.
+- GPU instances (e.g., g5, p4d, p5) are mandatory for real-time LLMs.
+
+#### 2. Token-Based Processing
+- LLMs use tokenized inputs and outputs.
+- Requires frameworks like HuggingFace Transformers, vLLM, TGI.
+
+#### 3. Large Model Loading
+- LLMs can take minutes to load into memory.
+- Fast I/O from S3 or FSx is needed to handle large weights.
+
+#### 4. High Memory Usage
+- Some models use up to 80 GB VRAM.
+- Models often need to be quantized or sharded.
+
+#####  Special AWS Services for LLM Deployment
+
+| Service | Purpose |
+|---------|---------|
+| **Amazon S3** | Store large model files |
+| **Amazon FSx for Lustre** | High-throughput model access |
+| **Amazon SageMaker** | Managed GPU training and inference |
+| **Amazon EKS + GPU Nodes** | Host custom LLM inference workloads |
+| **EFA (Elastic Fabric Adapter)** | High-speed network for multi-GPU training |
+| **AWS Batch or Async Lambda** | Delayed inference |
+| **Bedrock** | Use commercial LLMs without hosting |
+| **Prometheus + Grafana** | GPU monitoring |
+| **IRSA (IAM Roles for Service Accounts)** | Secure pod-level AWS access |
