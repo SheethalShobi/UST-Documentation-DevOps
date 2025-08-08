@@ -18,6 +18,12 @@ App Pod: Interacts with user input and routes it to LLM or AWS APIs.
 efficient for workloads that involve complex calculations and require massive throughput.
 - This makes them ideal for tasks 
 such as Machine Learning (ML) and Deep Learning (DL)
+
+##### Why Configuring Node Groups is Needed:
+- Provide Compute Resources
+- Choose Hardware: They let you select specific hardware for your workload.
+- Enable Auto Scaling: Node groups allow your cluster to scale automatically.
+- Security and IAM: Each node group gets its own IAM role, which defines what AWS services the pods running on those nodes can access, enabling fine-grained access control.
  ------
 
 #### Why are GPUs important for LLMs?
@@ -45,6 +51,28 @@ from private backend services.
 - Includes:
 Public Subnet: For services that need internet access (e.g., ALB).
 Private Subnet: For sensitive resources like EKS nodes and S3 access.
+
+```
+🔹 Step-by-Step:
+VPC Dashboard: Go to AWS Console → VPC → "Create VPC"
+Name: llm-vpc
+CIDR Block: 10.0.0.0/16 – This gives you 65,536 private IPs
+Tenancy: Default (shared hardware)
+```
+```
+Create subnets (atleast 2)
+Example:
+Public Subnet 1: 10.0.1.0/24 (us-east-1a)
+Public Subnet 2: 10.0.3.0/24 (us-east-1b)
+Private Subnet 1: 10.0.2.0/24 (us-east-1a)
+Private Subnet 2: 10.0.4.0/24 (us-east-1b)
+```
+```
+Internet Gateway:
+Used to provide internet access to public subnets.
+After creation, attach it to the VPC. 🔹 Route Table:
+For public subnets: Create a route table → Add route 0.0.0.0/0 → Target = Internet Gateway → Associate to public subnets.
+```
 ------
 
 #### 4. IAM Roles & IRSA (IAM Roles for Service Accounts)
@@ -73,7 +101,35 @@ You create a Kubernetes service account
 You create an IAM role with a trust policy allowing that service account to assume the role
 You annotate the service account with the IAM role ARN
 Pods using that service account will get temporary AWS credentials (via STS)
+
 ```
+```
+🔹 EKS Cluster Role:
+Go to IAM → Roles → "Create Role"
+Use case: EKS
+Policy: Attach AmazonEKSClusterPolicy
+Name: EKSClusterRole
+```
+```
+🔹 EKS Node Group Role:
+Go to IAM → Roles → "Create Role"
+Use case: EC2 (for nodes)
+Policies to Attach:
+AmazonEKSWorkerNodePolicy
+AmazonEC2ContainerRegistryReadOnly
+AmazonEKS_CNI_Policy
+```
+```
+Create Cluster: Console → EKS → Create Cluster
+Fill:
+Cluster Name: llm-cluster
+Kubernetes Version: Choose latest stable
+Cluster Role: Select EKSClusterRole
+VPC: Select llm-vpc
+Subnets: Select the 4 subnets created earlier
+Enable Logging (Optional): Audit logs for debugging
+```
+
 ------
 ####  5. S3 Bucket
 - LLM model artifacts (the trained model files) are securely stored in an Amazon S3 bucket.
