@@ -195,11 +195,10 @@ the application pods running your LLM.
 | Service | Purpose |
 |---------|---------|
 | **Amazon S3** | Store large model files |
-| **Amazon FSx for Lustre** | High-throughput model access |
 | **Amazon SageMaker** | Managed GPU training and inference |
 | **Amazon EKS + GPU Nodes** | Host custom LLM inference workloads |
 | **EFA (Elastic Fabric Adapter)** | High-speed network for multi-GPU training |
 | **AWS Batch or Async Lambda** | Delayed inference |
 | **Bedrock** | Use commercial LLMs without hosting |
 | **Prometheus + Grafana** | GPU monitoring |
-| **IRSA (IAM Roles for Service Accounts)** | Secure pod-level AWS access |
+
