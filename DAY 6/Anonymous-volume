@@ -1,0 +1,14 @@
+-------
+Anonymous Volume
+
+root@267239462abd:/home/ubuntu/inside_the_container# exit
+exit
+root@ip-172-31-86-230:/var/lib/docker/volumes/myvol# ls
+_data
+root@ip-172-31-86-230:/var/lib/docker/volumes/myvol# cd _data
+root@ip-172-31-86-230:/var/lib/docker/volumes/myvol/_data# docker run -v /sheethal nginx bash
+root@ip-172-31-86-230:/var/lib/docker/volumes/myvol/_data# docker volume ls
+DRIVER    VOLUME NAME
+local     c18304f12f4d3561857ba419ca0ee3c6b6c27a5f46d4989c4f629b26fccf101b
+local     myvol
+root@ip-172-31-86-230:/var/lib/docker/volumes/myvol/_data#
