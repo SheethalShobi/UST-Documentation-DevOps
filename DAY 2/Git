@@ -1,0 +1,60 @@
+GIT
+
+branch - snapshot of current working repo
+uncommit - revert,reset
+ making a new commit and reverting back
+ checkout to previous stage and then commit
+stash and then pop
+
+usecase of stash : pull the changes ie when u don't want to loose ur changes and also done by other frnd
+stash it such that it goes to a stable state ,fix it and then merge
+
+Git tagging is basically putting a sticky note on a specific commit so you can easily find it later (like marking a release)
+
+PR : merging changes from one branch to another
+     fork a repo and if I made changes and wants to push to owner's repo too
+
+How a PR Works:
+You push your changes to a branch on the remote repo (e.g., feature/login).
+On the hosting service (GitHub/GitLab/Bitbucket), you create a Pull Request:
+   Base branch → the branch you want to merge into (e.g., main or develop)
+   Compare branch → your feature branch
+
+The system shows diffs (changes made).
+Reviewers can:
+  Comment on lines
+  Suggest changes
+Approve or request changes
+Once approved and all checks pass, the PR gets merged.
+
+# Create README
+echo "# Git Lab Project" > README.md
+git status
+git add README.md
+git commit -m "feat: Add initial project README"
+git push origin master   # or 'main' depending on default branch
+
+echo "Hi, I’m Alice." > alice.md
+git add alice.md
+git commit -m "docs: Add introduction for Alice"
+git log --oneline --graph --all
+
+
+Phase 2 – Branching & GitFlow
+Exercise 2.1: Feature branch
+bash
+Copy
+Edit
+# From main/master
+git checkout master
+git checkout -b feature/add-project-overview
+
+echo "This project teaches Git workflows." > project_overview.md
+git add project_overview.md
+git commit -m "docs: Add project overview section"
+echo "Corrected typo in overview." >> project_overview.md
+git commit -am "fix: Correct grammar in project overview"
+
+git checkout master
+git merge feature/add-project-overview
+git push origin master
