@@ -1,0 +1,107 @@
+Using 2 machines
+
+:/home/ubuntu# docker volume ls
+DRIVER    VOLUME NAME
+local     myvol
+root@ip-172-31-86-230:/home/ubuntu# cd ../../var/lib/
+root@ip-172-31-86-230:/var/lib# ls
+PackageKit         dhcpcd         misc          systemd
+amazon             docker         os-prober     tpm
+app-info           dpkg           pam           ubuntu-advantage
+apport             fwupd          plymouth      ubuntu-fan
+apt                git            polkit-1      ubuntu-release-upgrader
+boltd              grub           private       ucf
+chrony             hibinit-agent  python        udisks2
+cloud              ieee-data      sgml-base     unattended-upgrades
+command-not-found  kubelet        shells.state  update-manager
+containerd         landscape      shim-signed   update-notifier
+containers         libuuid        snapd         usb_modeswitch
+crio               logrotate      sudo          vim
+dbus               man-db         swcatalog     xml-core
+root@ip-172-31-86-230:/var/lib# cd docker
+root@ip-172-31-86-230:/var/lib/docker# ls
+buildkit    engine-id  network   plugins   swarm  volumes
+containers  image      overlay2  runtimes  tmp
+root@ip-172-31-86-230:/var/lib/docker# cd volumes
+root@ip-172-31-86-230:/var/lib/docker/volumes# ls
+backingFsBlockDev  metadata.db  myvol
+root@ip-172-31-86-230:/var/lib/docker/volumes# cd myvol
+root@ip-172-31-86-230:/var/lib/docker/volumes/myvol# docker run -it -v myvol:/home/ubuntu/inside_the_container ubuntu bash
+Unable to find image 'ubuntu:latest' locally
+latest: Pulling from library/ubuntu
+b71466b94f26: Pull complete
+Digest: sha256:7c06e91f61fa88c08cc74f7e1b7c69ae24910d745357e0dfe1d2c0322aaf20f9
+Status: Downloaded newer image for ubuntu:latest
+root@267239462abd:/# ls
+bin   dev  home  lib64  mnt  proc  run   srv  tmp  var
+boot  etc  lib   media  opt  root  sbin  sys  usr
+root@267239462abd:/# cd home/ubuntu/
+root@267239462abd:/home/ubuntu# ls
+inside_the_container
+root@267239462abd:/home/ubuntu# touch hello.txt
+root@267239462abd:/home/ubuntu# ls
+hello.txt  inside_the_container
+root@267239462abd:/home/ubuntu# echo "hello">hello.txt
+root@267239462abd:/home/ubuntu# cat hello.txt
+hello
+root@267239462abd:/home/ubuntu# cd inside_the_container
+root@267239462abd:/home/ubuntu/inside_the_container# touch sample.txt
+root@267239462abd:/home/ubuntu/inside_the_container# echo "hi">sample.txt
+root@267239462abd:/home/ubuntu/inside_the_container# ls
+random.txt  sample.txt
+root@267239462abd:/home/ubuntu/inside_the_container# cat sample.txt
+hi
+root@267239462abd:/home/ubuntu/inside_the_container# cat random.txt
+hi
+root@267239462abd:/home/ubuntu/inside_the_container# cat random.txt
+hi,from cnt 2
+root@267239462abd:/home/ubuntu/inside_the_container#
+
+
+-----
+
+root@ip-172-31-86-230:/home/ubuntu# docker run -it -v myvol:/home/ubuntu/inside_the_container nginx bash
+Unable to find image 'nginx:latest' locally
+latest: Pulling from library/nginx
+b1badc6e5066: Pull complete
+a2da0c0f2353: Pull complete
+e5d9bb0b85cc: Pull complete
+14a859b5ba24: Pull complete
+716cdf61af59: Pull complete
+14e422fd20a0: Pull complete
+c3741b707ce6: Pull complete
+Digest: sha256:33e0bbc7ca9ecf108140af6288c7c9d1ecc77548cbfd3952fd8466a75edefe57
+Status: Downloaded newer image for nginx:latest
+root@a8486fab4db3:/# cd /home/ubuntu/inside_the-container
+bash: cd: /home/ubuntu/inside_the-container: No such file or directory
+root@a8486fab4db3:/# cd /home/ubuntu/
+root@a8486fab4db3:/home/ubuntu# ls
+inside_the_container
+root@a8486fab4db3:/home/ubuntu# cd inside_the_container
+root@a8486fab4db3:/home/ubuntu/inside_the_container# ls
+sample.txt
+root@a8486fab4db3:/home/ubuntu/inside_the_container# touch random.txt
+root@a8486fab4db3:/home/ubuntu/inside_the_container# echo "hi">random.txt
+root@a8486fab4db3:/home/ubuntu/inside_the_container# echo "hi,from cnt 2">random.txtroot@a8486fab4db3:/home/ubuntu/inside_the_container# exit
+exit
+root@ip-172-31-86-230:/home/ubuntu# exit
+exit
+ubuntu@ip-172-31-86-230:~$ sudo su
+root@ip-172-31-86-230:/home/ubuntu# docker run -it -v myvol:/home/ubuntu/inside_the_container:ro nginx bash
+root@01710d97d00d:/# ls
+bin   docker-entrypoint.d   home   media  proc  sbin  tmp
+boot  docker-entrypoint.sh  lib    mnt    root  srv   usr
+dev   etc                   lib64  opt    run   sys   var
+root@01710d97d00d:/# home/ubuntu/inside_the_container
+bash: home/ubuntu/inside_the_container: Is a directory
+root@01710d97d00d:/# /home/ubuntu/
+bash: /home/ubuntu/: Is a directory
+root@01710d97d00d:/# home/ubuntu/
+bash: home/ubuntu/: Is a directory
+root@01710d97d00d:/# cd /home/ubuntu/inside_the_container
+root@01710d97d00d:/home/ubuntu/inside_the_container# ls
+random.txt  sample.txt
+root@01710d97d00d:/home/ubuntu/inside_the_container# echo "done">sample.txt
+bash: sample.txt: Read-only file system
+root@01710d97d00d:/home/ubuntu/inside_the_container#
+
