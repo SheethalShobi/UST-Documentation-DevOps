@@ -1,0 +1,132 @@
+MERGE CONFLICT
+
+
+PS C:\Users\299753\Desktop\git> git checkout -b feature/add-project-overview
+>> 
+fatal: a branch named 'feature/add-project-overview' already exists
+PS C:\Users\299753\Desktop\git> echo "This is the overview from the feature branch" > project-overview
+PS C:\Users\299753\Desktop\git> git add project-overview
+PS C:\Users\299753\Desktop\git> git commit -m "Add feature branch version of project overview"
+[master 730e51f] Add feature branch version of project overview
+ Committer: Sheethal Shobi(UST <299753@ust.com>
+Your name and email address were configured automatically based
+on your username and hostname. Please check that they are accurate.
+You can suppress this message by setting them explicitly:
+
+    git config --global user.name "Your Name"
+    git config --global user.email you@example.com
+
+After doing this, you may fix the identity used for this commit with:
+
+    git commit --amend --reset-author
+
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+ create mode 100644 project-overview
+PS C:\Users\299753\Desktop\git> git checkout master
+D       Github-Actions-demo
+Already on 'master'
+Your branch is ahead of 'origin/master' by 1 commit.
+  (use "git push" to publish your local commits)
+PS C:\Users\299753\Desktop\git> echo "This is the overview from the master branch" > project-overview
+PS C:\Users\299753\Desktop\git> git add project-overview
+PS C:\Users\299753\Desktop\git> git commit -m "Add master branch version of project overview"
+[master eb08da4] Add master branch version of project overview
+ Committer: Sheethal Shobi(UST <299753@ust.com>
+Your name and email address were configured automatically based
+on your username and hostname. Please check that they are accurate.
+You can suppress this message by setting them explicitly:
+
+    git config --global user.name "Your Name"
+    git config --global user.email you@example.com
+
+After doing this, you may fix the identity used for this commit with:
+
+    git commit --amend --reset-author
+
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+PS C:\Users\299753\Desktop\git> git merge feature/add-project-overview
+Already up to date.             git checkout feature/add-project-overview
+>> C:\Users\299753\Desktop\git>
+D       Github-Actions-demo
+Switched to branch 'feature/add-project-overview'
+PS C:\Users\299753\Desktop\git> git push -u origin feature/add-project-overview
+>>
+Total 0 (delta 0), reused 0 (delta 0), pack-reused 0 (from 0)
+remote: 
+remote: Create a pull request for 'feature/add-project-overview' on GitHub by visiting:
+remote:      https://github.com/SheethalShobi/Git-Demo/pull/new/feature/add-project-overview
+remote:
+To https://github.com/SheethalShobi/Git-Demo.git
+ * [new branch]      feature/add-project-overview -> feature/add-project-overview 
+branch 'feature/add-project-overview' set up to track 'origin/feature/add-project-overview'.
+PS C:\Users\299753\Desktop\git> git branch
+* feature/add-project-overview
+  main
+  master
+  readme-demo
+PS C:\Users\299753\Desktop\git> echo "This is the overview from the feature branch" > project-overview
+>> git add project-overview
+>> git commit -m "Add feature branch version of project overview"
+>>
+[feature/add-project-overview 4ac8d2b] Add feature branch version of project overview
+ Committer: Sheethal Shobi(UST <299753@ust.com>
+Your name and email address were configured automatically based
+on your username and hostname. Please check that they are accurate.
+You can suppress this message by setting them explicitly:
+
+    git config --global user.name "Your Name"
+    git config --global user.email you@example.com
+
+After doing this, you may fix the identity used for this commit with:
+
+    git commit --amend --reset-author
+
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+ create mode 100644 project-overview
+PS C:\Users\299753\Desktop\git> git checkout master
+>>
+D       Github-Actions-demo
+Switched to branch 'master'
+Your branch is ahead of 'origin/master' by 2 commits.
+PS C:\Users\299753\Desktop\git> echo "This is the overview from the master branch" > project-overview    
+PS C:\Users\299753\Desktop\git> echo "This is the overview from the master branch" > project-overview
+>> git add project-overview
+>> git commit -m "Add master branch version of project overview"
+>>
+On branch master
+Your branch is ahead of 'origin/master' by 2 commits.
+  (use "git push" to publish your local commits)
+
+Changes not staged for commit:
+  (use "git add/rm <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+        deleted:    Github-Actions-demo
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+        Git-Demo/
+
+no changes added to commit (use "git add" and/or "git commit -a")
+PS C:\Users\299753\Desktop\git> git merge feature/add-project-overview
+>>
+warning: Cannot merge binary files: project-overview (HEAD vs. feature/add-project-overview)
+Auto-merging project-overview
+CONFLICT (add/add): Merge conflict in project-overview
+Automatic merge failed; fix conflicts and then commit the result.
+PS C:\Users\299753\Desktop\git> git add project-overview
+>> git commit -m "Merge feature/add-project-overview into master and resolve conflict"
+>>
+[master ca62739] Merge feature/add-project-overview into master and resolve conflict
+ Committer: Sheethal Shobi(UST <299753@ust.com>
+Your name and email address were configured automatically based
+on your username and hostname. Please check that they are accurate.
+You can suppress this message by setting them explicitly:
+
+    git config --global user.name "Your Name"
+    git config --global user.email you@example.com
+
+After doing this, you may fix the identity used for this commit with:
+
+    git commit --amend --reset-author
+
+PS C:\Users\299753\Desktop\git>
