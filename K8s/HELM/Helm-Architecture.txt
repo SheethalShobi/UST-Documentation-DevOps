@@ -1,0 +1,40 @@
+Helm Architecture 
+
+1. Developer
+Creates Helm Charts (a collection of Kubernetes YAML templates).
+Charts are packaged and can be hosted in a Repository.
+
+2. Repository
+Stores packaged charts (like Docker Hub for images).
+Can be public (e.g., Bitnami, Artifact Hub) or private (self-hosted).
+
+Users can:
+Find and download charts from the repository.
+Host their own custom charts.
+
+3. Helm Client (Admin / Workstation)
+The administrator uses the Helm CLI from their workstation.
+
+Responsibilities:
+Search & download charts from repositories (helm repo add, helm search).
+Install charts into Kubernetes (helm install).
+Manage releases (helm upgrade, helm rollback, helm uninstall).
+
+4. Helm + Kubernetes Cluster
+When helm install is executed:
+Helm fetches the chart (locally or from repo).
+Substitutes values into templates → generates Kubernetes manifests.
+Sends the manifests to the Kubernetes API Server.
+
+5. Kubernetes Master Components
+API Server → Entry point, receives manifests from Helm.
+Scheduler → Assigns Pods to nodes.
+Controller Manager → Ensures desired state is maintained.
+etcd → Stores cluster state.
+
+6. Kubernetes Nodes
+Actual workloads (Pods, Services, etc.) are deployed on Worker Nodes.
+Each Helm installation creates a Release:
+Example in the diagram: Release A and Release B deployed across nodes.
+A release is a running instance of a chart.
+
