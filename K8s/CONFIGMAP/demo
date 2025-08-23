@@ -1,0 +1,195 @@
+ubuntu@ip-172-31-89-87:~/docker-k8s/yaml$ cd configmap/
+ubuntu@ip-172-31-89-87:~/docker-k8s/yaml/configmap$ cd simple
+ubuntu@ip-172-31-89-87:~/docker-k8s/yaml/configmap/simple$ ls
+configmap.yml  pod-with-config-map.yml
+
+ubuntu@ip-172-31-89-87:~/docker-k8s/yaml/configmap/simple$ cat conp.yml
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: example-configmap
+data:
+  example-key: example-value
+
+ubuntu@ip-172-31-89-87:~/docker-k8s/yanfigmap/simple$ cat pod-with-config-map.yml
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: example-pod
+spec:
+  containers:
+  - name: example-container
+    image: nginx
+    env:
+    - name: EXAMPLE_ENV_VAR
+      valueFrom:
+        configMapKeyRef:
+          name: example-configmap
+          key: example-keyubuntu@ip-172-31-89-87:~/docker-k
+
+ubuntu@ip-172-31-89-87:~/docker-k8s/yaml/configmap/simple$ kubectly -f pod-with-config-map.yml
+pod/example-pod created
+
+ubuntu@ip-172-31-89-87:~/docker-k8s/yaml/configmap/simple$ kubectlpo
+NAME             READY   STATUS                       RESTARTS   A
+example-pod      0/1     CreateContainerConfigError   0          2
+mysecret-pod     1/1     Running                      0          1
+secret-env-pod   1/1     Running                      0          3
+
+ubuntu@ip-172-31-89-87:~/docker-k8s/yaml/configmap/simple$ kubectlconfigmap
+NAME               DATA   AGE
+kube-root-ca.crt   1      59m
+
+ubuntu@ip-172-31-89-87:~/docker-k8s/yaml/configmap/simple$ kubectlconfigmap -A
+NAMESPACE         NAME                                              DATA   AGE
+default           kube-root-ca.crt                                  1      59m
+kube-node-lease   kube-root-ca.crt                                  1      59m
+kube-public       cluster-info                                      2      59m
+kube-public       kube-root-ca.crt                                  1      59m
+kube-system       coredns                                           1      59m
+kube-system       extension-apiserver-authentication                6      59m
+kube-system       kube-apiserver-legacy-service-account-token-trac  1      59m
+kube-system       kube-proxy                                        2      59m
+kube-system       kube-root-ca.crt                                  1      59m
+kube-system       kubeadm-config                                    1      59m
+kube-system       kubelet-config                                    1      59m
+kube-system       weave-net                                         0      59m
+
+ubuntu@ip-172-31-89-87:~/docker-k8s/yaml/configmap/simple$ kubectlpo
+NAME             READY   STATUS                       RESTARTS   A
+example-pod      0/1     CreateContainerConfigError   0          6
+mysecret-pod     1/1     Running                      0          1
+secret-env-pod   1/1     Running                      0          3
+
+ubuntu@ip-172-31-89-87:~/docker-k8s/yaml/configmap/simple$ kubectl describe po example-pod
+Name:             example-pod
+Namespace:        default
+Priority:         0
+Service Account:  default
+Node:             master/172.31.89.87
+Start Time:       Fri, 22 Aug 2025 05:00:46 +0000
+Labels:           <none>
+Annotations:      <none>
+Status:           Pending
+IP:               10.32.0.6
+IPs:
+  IP:  10.32.0.6
+Containers:
+  example-container:
+    Container ID:
+    Image:          nginx
+    Image ID:
+    Port:           <none>
+    Host Port:      <none>
+    State:          Waiting
+      Reason:       CreateContainerConfigError
+    Ready:          False
+    Restart Count:  0
+    Environment:
+      EXAMPLE_ENV_VAR:  <set to the key 'example-key' of config maample-configmap'>  Optional: false
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-s-9nn2b (ro)
+Conditions:
+  Type                        Status
+  PodReadyToStartContainers   True
+  Initialized                 True
+  Ready                       False
+  ContainersReady             False
+  PodScheduled                True
+Volumes:
+  kube-api-access-9nn2b:
+    Type:                    Projected (a volume that contains inj data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    ConfigMapOptional:       <nil>
+    DownwardAPI:             true
+QoS Class:                   BestEffort
+Node-Selectors:              <none>
+Tolerations:                 node.kubernetes.io/not-ready:NoExecutExists for 300s
+                             node.kubernetes.io/unreachable:NoExecp=Exists for 300s
+Events:
+  Type     Reason     Age                From               Messag
+  ----     ------     ----               ----               ------
+  Normal   Scheduled  90s                default-scheduler  Succesy assigned default/example-pod to master
+  Normal   Pulled     87s                kubelet            Succesy pulled image "nginx" in 2.998s (2.998s including waiting). Image: 196544386 bytes.
+  Normal   Pulled     86s                kubelet            Succesy pulled image "nginx" in 214ms (214ms including waiting). Image s196544386 bytes.
+  Normal   Pulled     74s                kubelet            Succesy pulled image "nginx" in 277ms (277ms including waiting). Image s196544386 bytes.
+  Normal   Pulled     63s                kubelet            Succesy pulled image "nginx" in 229ms (229ms including waiting). Image s196544386 bytes.
+  Normal   Pulled     50s                kubelet            Succesy pulled image "nginx" in 484ms (484ms including waiting). Image s196544386 bytes.
+  Normal   Pulled     38s                kubelet            Succesy pulled image "nginx" in 251ms (252ms including waiting). Image s196544386 bytes.
+  Normal   Pulled     26s                kubelet            Succesy pulled image "nginx" in 259ms (259ms including waiting). Image s196544386 bytes.
+  Normal   Pulling    11s (x8 over 90s)  kubelet            Pullinge "nginx"
+  Warning  Failed     11s (x8 over 87s)  kubelet            Error:igmap "example-configmap" not found
+  Normal   Pulled     11s                kubelet            Succesy pulled image "nginx" in 231ms (231ms including waiting). Image s196544386 bytes.
+
+ubuntu@ip-172-31-89-87:~/docker-k8s/yaml/configmap/simple$ kubectly -f configmap.yml
+configmap/example-configmap created
+
+ubuntu@ip-172-31-89-87:~/docker-k8s/yaml/configmap/simple$ kubectly -f pod-with-config-map.yml
+pod/example-pod unchanged
+
+ubuntu@ip-172-31-89-87:~/docker-k8s/yaml/configmap/simple$ kubectlpo
+NAME             READY   STATUS    RESTARTS   AGE
+example-pod      1/1     Running   0          2m40s
+mysecret-pod     1/1     Running   0          18m
+secret-env-pod   1/1     Running   0          39m
+
+ubuntu@ip-172-31-89-87:~/docker-k8s/yaml/configmap/simple$ kubectl -it example -- /bin/bash
+Error from server (NotFound): pods "example" not found
+ubuntu@ip-172-31-89-87:~/docker-k8s/yaml/configmap/simple$ kubectlconfigmap -A
+NAMESPACE         NAME                                              DATA   AGE
+default           example-configmap                                 1      63s
+default           kube-root-ca.crt                                  1      62m
+kube-node-lease   kube-root-ca.crt                                  1      62m
+kube-public       cluster-info                                      2      62m
+kube-public       kube-root-ca.crt                                  1      62m
+kube-system       coredns                                           1      62m
+kube-system       extension-apiserver-authentication                6      62m
+kube-system       kube-apiserver-legacy-service-account-token-trac  1      62m
+kube-system       kube-proxy                                        2      62m
+kube-system       kube-root-ca.crt                                  1      62m
+kube-system       kubeadm-config                                    1      62m
+kube-system       kubelet-config                                    1      62m
+kube-system       weave-net                                         0      61m
+
+ubuntu@ip-172-31-89-87:~/docker-k8s/yaml/configmap/simple$ kubectl -it example-pod -- /bin/bash
+root@example-pod:/# env
+KUBERNETES_SERVICE_PORT_HTTPS=443
+KUBERNETES_SERVICE_PORT=443
+HOSTNAME=example-pod
+PWD=/
+EXAMPLE_ENV_VAR=example-value
+PKG_RELEASE=1~bookworm
+HOME=/root
+KUBERNETES_PORT_443_TCP=tcp://10.96.0.1:443
+DYNPKG_RELEASE=1~bookworm
+NJS_VERSION=0.9.1
+TERM=xterm
+SHLVL=1
+KUBERNETES_PORT_443_TCP_PROTO=tcp
+KUBERNETES_PORT_443_TCP_ADDR=10.96.0.1
+KUBERNETES_SERVICE_HOST=10.96.0.1
+KUBERNETES_PORT=tcp://10.96.0.1:443
+KUBERNETES_PORT_443_TCP_PORT=443
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+NGINX_VERSION=1.29.1
+NJS_RELEASE=1~bookworm
+_=/usr/bin/env
+root@example-pod:/# exit
+exit
+
+ubuntu@ip-172-31-89-87:~/docker-k8s/yaml/configmap/simple$ kubectlpo -n kube-system
+NAME                             READY   STATUS    RESTARTS      A
+coredns-668d6bf9bc-94jzc         1/1     Running   0             6
+coredns-668d6bf9bc-9d2ww         1/1     Running   0             6
+etcd-master                      1/1     Running   0             6
+kube-apiserver-master            1/1     Running   0             6
+kube-controller-manager-master   1/1     Running   0             6
+kube-proxy-4zqlp                 1/1     Running   0             6
+kube-scheduler-master            1/1     Running   0             6
+weave-net-l4cml                  2/2     Running   1 (62m ago)   6
+
+
+these are static pods and k8s will take care of them
