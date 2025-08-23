@@ -1,0 +1,62 @@
+ubuntu@ip-172-31-89-87:~/docker-k8s/yaml$ cd job
+
+ubuntu@ip-172-31-89-87:~/docker-k8s/yaml/job$ ls
+Interesting.yml  cronjob.yaml  job.yaml
+ubuntu@ip-172-31-89-87:~/docker-k8s/yaml/job$ cat job.yaml
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: countdown
+spec:
+  template:
+    metadata:
+      name: countdown
+    spec:
+      containers:
+      - name: counter
+        image: centos:7
+        command:
+        - "/bin/bash"
+        - "-c"
+        - "for i in 9 8 7 6 5 4 3 2 1; do echo $i; done"
+      restartPolicy: Never
+
+ubuntu@ip-172-31-89-87:~/docker-k8s/yaml/job$ kubectl apply -f jobs.yaml
+error: the path "jobs.yaml" does not exist
+
+ubuntu@ip-172-31-89-87:~/docker-k8s/yaml/job$ kubectl apply -f job.yaml
+job.batch/countdown created
+
+ubuntu@ip-172-31-89-87:~/docker-k8s/yaml/job$ kubectl get job
+NAME        STATUS    COMPLETIONS   DURATION   AGE
+countdown   Running   0/1           8s         8s
+
+ubuntu@ip-172-31-89-87:~/docker-k8s/yaml/job$ kubectl get job
+NAME        STATUS     COMPLETIONS   DURATION   AGE
+countdown   Complete   1/1           8s         14s
+
+ubuntu@ip-172-31-89-87:~/docker-k8s/yaml/job$ kubectl get po
+NAME              READY   STATUS      RESTARTS   AGE
+countdown-txwpg   0/1     Completed   0          22s
+example-pod       1/1     Running     0          20m
+mysecret-pod      1/1     Running     0          35m
+secret-env-pod    1/1     Running     0          57m
+
+ubuntu@ip-172-31-89-87:~/docker-k8s/yaml/job$ kubectl get po
+NAME              READY   STATUS      RESTARTS   AGE
+countdown-txwpg   0/1     Completed   0          28s
+example-pod       1/1     Running     0          20m
+mysecret-pod      1/1     Running     0          36m
+secret-env-pod    1/1     Running     0          57m
+
+ubuntu@ip-172-31-89-87:~/docker-k8s/yaml/job$ kubectl logs countdown-txwpg
+9
+8
+7
+6
+5
+4
+3
+2
+1

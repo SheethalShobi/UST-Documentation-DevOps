@@ -1,0 +1,70 @@
+ubuntu@ip-172-31-89-87:~/docker-k8s/yaml/job$ ls
+Interesting.yml  cronjob.yaml  job.yaml
+ubuntu@ip-172-31-89-87:~/docker-k8s/yaml/job$ cat cronjob.yaml
+
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: hello
+spec:
+  schedule: "*/1 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: hello
+            image: busybox
+            args:
+            - /bin/sh
+            - -c
+            - date; echo Hello from the Kubernetes cluster
+          restartPolicy: OnFailure
+
+ubuntu@ip-172-31-89-87:~/docker-njob.yamljob$ kubectl apply -f cro
+cronjob.batch/hello created
+
+ubuntu@ip-172-31-89-87:~/docker-k8s/yaml/job$ kubectl get job
+NAME        STATUS     COMPLETIONS   DURATION   AGE
+countdown   Complete   1/1           8s         5m19s
+
+ubuntu@ip-172-31-89-87:~/docker-k8s/yaml/job$ kubectl get po
+NAME                   READY   STATUS      RESTARTS   AGE
+countdown-txwpg        0/1     Completed   0          5m28s
+example-pod            1/1     Running     0          25m
+hello-29264006-rbwxc   0/1     Completed   0          3s
+mysecret-pod           1/1     Running     0          41m
+secret-env-pod         1/1     Running     0          62m
+
+ubuntu@ip-172-31-89-87:~/docker-k8s/yaml/job$ kubectl get cronjob
+NAME    SCHEDULE      TIMEZONE   SUSPEND   ACTIVE   LAST SCHEDULE   AGE
+hello   */1 * * * *   <none>     False     0        15s             33s
+
+ubuntu@ip-172-31-89-87:~/docker-k8s/yaml/job$ kubectl get po
+NAME                   READY   STATUS      RESTARTS   AGE
+countdown-txwpg        0/1     Completed   0          5m46s
+example-pod            1/1     Running     0          25m
+hello-29264006-rbwxc   0/1     Completed   0          21s
+mysecret-pod           1/1     Running     0          41m
+secret-env-pod         1/1     Running     0          62m
+
+ubuntu@ip-172-31-89-87:~/docker-k8s/yaml/job$ kubectl logs hello-29264006-rbwxc
+Fri Aug 22 05:26:01 UTC 2025
+Hello from the Kubernetes cluster
+ubuntu@ip-172-31-89-87:~/docker-k8s/yaml/job$ kubectl get po      NAME                   READY   STATUS      RESTARTS   AGE
+countdown-txwpg        0/1     Completed   0          6m25s
+example-pod            1/1     Running     0          26m
+hello-29264006-rbwxc   0/1     Completed   0          60s
+mysecret-pod           1/1     Running     0          42m
+secret-env-pod         1/1     Running     0          63m
+
+ubuntu@ip-172-31-89-87:~/docker-k8s/yaml/job$ watch -n kubectl get po
+watch: failed to parse argument: 'kubectl': Invalid argument
+
+ubuntu@ip-172-31-89-87:~/docker-k8s/yaml/job$ watch -n 1 kubectl get po
+ubuntu@ip-172-31-89-87:~/docker-k8s/yaml/job$ kubectl get job
+NAME             STATUS     COMPLETIONS   DURATION   AGE
+countdown        Complete   1/1           8s         7m19s
+hello-29264006   Complete   1/1           4s         114s
+hello-29264007   Complete   1/1           3s         54s
+ubuntu@ip-172-31-89-87:~/docker-k8s/yaml/job$
