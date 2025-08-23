@@ -1,0 +1,116 @@
+ubuntu@master:~$ cd docker-k8s
+ubuntu@master:~/docker-k8s$ cd yaml/volumes
+ubuntu@master:~/docker-k8s/yaml/volumes$ ls
+ empty-dir.yaml  'new 7.txt'   persistent-volume-claim.yaml   persistent-volume.yaml   storageClass       storageclass.yml
+ host-path.yaml   nfs          persistent-volume-pod.yaml     sc.yml                   storageclass.txt
+ubuntu@master:~/docker-k8s/yaml/volumes$ kubectl apply -f empty-dir.yaml
+pod/my-empty-dir configured
+ubuntu@master:~/docker-k8s/yaml/volumes$ kubectl get po
+NAME           READY   STATUS    RESTARTS      AGE
+my-empty-dir   2/2     Running   2 (30m ago)   90m
+ubuntu@master:~/docker-k8s/yaml/volumes$ kubectl apply -f persistent-volume.yaml
+persistentvolume/my-persistent-volume created
+ubuntu@master:~/docker-k8s/yaml/volumes$ kubectl get po
+NAME             READY   STATUS    RESTARTS      AGE
+my-empty-dir     2/2     Running   2 (36m ago)   96m
+redis-hostpath   1/1     Running   0             2m48s
+ubuntu@master:~/docker-k8s/yaml/volumes$ kubectl get pv
+NAME                   CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS      CLAIM   STORAGECLASS   VOLUMEATTRIBUTESCLASS   REASON   AGE
+my-persistent-volume   100Mi      RWO            Retain           Available           pv-demo        <unset>                          13s
+ubuntu@master:~/docker-k8s/yaml/volumes$ kubectl get pv
+NAME                   CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS      CLAIM   STORAGECLASS   VOLUMEATTRIBUTESCLASS   REASON   AGE
+my-persistent-volume   100Mi      RWO            Retain           Available           pv-demo        <unset>                          21s
+ubuntu@master:~/docker-k8s/yaml/volumes$ kubectl get pv
+NAME                   CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS      CLAIM   STORAGECLASS   VOLUMEATTRIBUTESCLASS   REASON   AGE
+my-persistent-volume   100Mi      RWO            Retain           Available           pv-demo        <unset>                          43s
+ubuntu@master:~/docker-k8s/yaml/volumes$ kubectl apply -f persistent-volum-claime.yaml
+error: the path "persistent-volum-claime.yaml" does not exist
+ubuntu@master:~/docker-k8s/yaml/volumes$ kubectl apply -f persistent-volum-claim.yaml
+error: the path "persistent-volum-claim.yaml" does not exist
+ubuntu@master:~/docker-k8s/yaml/volumes$ kubectl apply -f persistent-volume-claim.yaml
+persistentvolumeclaim/my-persistent-volumeclaim created
+ubuntu@master:~/docker-k8s/yaml/volumes$ kubectl get po
+NAME             READY   STATUS    RESTARTS      AGE
+my-empty-dir     2/2     Running   2 (38m ago)   98m
+redis-hostpath   1/1     Running   0             4m15s
+ubuntu@master:~/docker-k8s/yaml/volumes$ kubectl get pv
+NAME                   CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                               STORAGECLASS   VOLUMEATTRIBUTESCLASS   REASON   AGE
+my-persistent-volume   100Mi      RWO            Retain           Bound    default/my-persistent-volumeclaim   pv-demo        <unset>                          98s
+ubuntu@master:~/docker-k8s/yaml/volumes$ cat persistent-volume-pod.yaml
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pv-pod
+spec:
+  containers:
+  - image: alpine
+    name: pv-container
+
+    command: ['sh', '-c', 'pv container running; sleep 3600']
+
+    volumeMounts:
+      - mountPath: "/my-pv-path"
+        name: my-persistent-volumeclaim-name
+
+  volumes:
+    - name: my-persistent-volumeclaim-name
+      persistentVolumeClaim:
+        claimName: my-persistent-volumeclaim
+ubuntu@master:~/docker-k8s/yaml/volumes$ kubectl apply -f persistent-volume-pod.yaml
+pod/pv-pod created
+ubuntu@master:~/docker-k8s/yaml/volumes$ kubectl get pvc
+NAME                        STATUS   VOLUME                 CAPACITY   ACCESS MODES   STORAGECLASS   VOLUMEATTRIBUTESCLASS   AGE
+my-persistent-volumeclaim   Bound    my-persistent-volume   100Mi      RWO            pv-demo        <unset>                 3m38s
+ubuntu@master:~/docker-k8s/yaml/volumes$ kubectl get pv
+NAME                   CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                               STORAGECLASS   VOLUMEATTRIBUTESCLASS   REASON   AGE
+my-persistent-volume   100Mi      RWO            Retain           Bound    default/my-persistent-volumeclaim   pv-demo        <unset>                          5m9s
+ubuntu@master:~/docker-k8s/yaml/volumes$ kubectl delete pv my-persistent-volume
+persistentvolume "my-persistent-volume" deleted
+^Cubuntu@master:~/docker-k8s/yaml/volumes$
+ubuntu@master:~/docker-k8s/yaml/volumes$ kubectl get pv
+NAME                   CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS        CLAIM                               STORAGECLASS   VOLUMEATTRIBUTESCLASS   REASON   AGE
+my-persistent-volume   100Mi      RWO            Retain           Terminating   default/my-persistent-volumeclaim   pv-demo        <unset>                          5m50s
+ubuntu@master:~/docker-k8s/yaml/volumes$ kubectl delete pvc my-persistent-volumeclaim
+persistentvolumeclaim "my-persistent-volumeclaim" deleted
+^[[A^[[A^Cubuntu@master:~/docker-k8s/yaml/volumes$ kubectl get pvc
+NAME                        STATUS        VOLUME                 CAPACITY   ACCESS MODES   STORAGECLASS   VOLUMEATTRIBUTESCLASS   AGE
+my-persistent-volumeclaim   Terminating   my-persistent-volume   100Mi      RWO            pv-demo        <unset>                 5m28s
+ubuntu@master:~/docker-k8s/yaml/volumes$ kubectl get po
+NAME             READY   STATUS    RESTARTS      AGE
+my-empty-dir     2/2     Running   2 (44m ago)   104m
+pv-pod           1/1     Running   0             3m46s
+redis-hostpath   1/1     Running   0             10m
+ubuntu@master:~/docker-k8s/yaml/volumes$ kubectl delete po pv-pod
+pod "pv-pod" deleted
+^Cubuntu@master:~/docker-k8s/yaml/volumes$ kubectl get po,pv,pvc
+NAME                 READY   STATUS        RESTARTS      AGE
+pod/my-empty-dir     2/2     Running       2 (44m ago)   104m
+pod/pv-pod           1/1     Terminating   0             4m11s
+pod/redis-hostpath   1/1     Running       0             10m
+
+NAME                                    CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS        CLAIM                               STORAGECLASS   VOLUMEATTRIBUTESCLASS   REASON   AGE
+persistentvolume/my-persistent-volume   100Mi      RWO            Retain           Terminating   default/my-persistent-volumeclaim   pv-demo        <unset>                          8m1s
+
+NAME                                              STATUS        VOLUME                 CAPACITY   ACCESS MODES   STORAGECLASS   VOLUMEATTRIBUTESCLASS   AGE
+persistentvolumeclaim/my-persistent-volumeclaim   Terminating   my-persistent-volume   100Mi      RWO            pv-demo        <unset>                 6m36s
+ubuntu@master:~/docker-k8s/yaml/volumes$ kubectl get po,pv,pvc
+NAME                 READY   STATUS        RESTARTS      AGE
+pod/my-empty-dir     2/2     Running       2 (44m ago)   104m
+pod/pv-pod           1/1     Terminating   0             4m22s
+pod/redis-hostpath   1/1     Running       0             10m
+
+NAME                                    CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS        CLAIM                               STORAGECLASS   VOLUMEATTRIBUTESCLASS   REASON   AGE
+persistentvolume/my-persistent-volume   100Mi      RWO            Retain           Terminating   default/my-persistent-volumeclaim   pv-demo        <unset>                          8m12s
+
+NAME                                              STATUS        VOLUME                 CAPACITY   ACCESS MODES   STORAGECLASS   VOLUMEATTRIBUTESCLASS   AGE
+persistentvolumeclaim/my-persistent-volumeclaim   Terminating   my-persistent-volume   100Mi      RWO            pv-demo        <unset>                 6m47s
+ubuntu@master:~/docker-k8s/yaml/volumes$ kubectl get po,pv,pvc
+NAME                 READY   STATUS    RESTARTS      AGE
+pod/my-empty-dir     2/2     Running   2 (44m ago)   104m
+pod/redis-hostpath   1/1     Running   0             11m
+ubuntu@master:~/docker-k8s/yaml/volumes$ kubectl get pv,pvc,po
+NAME                 READY   STATUS    RESTARTS      AGE
+pod/my-empty-dir     2/2     Running   2 (45m ago)   105m
+pod/redis-hostpath   1/1     Running   0             11m
+ubuntu@master:~/docker-k8s/yaml/volumes$
