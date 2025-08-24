@@ -153,7 +153,7 @@ Workers consult API Server to find master when initiating requests
 ---
 
 ## Horizontal Pod Autoscaling (HPA)
-- Adjusts the **number of replicas** of an app based on CPU utilization or custom metrics
+- Adjusts the **number of replicas/pods** of an app based on CPU utilization or custom metrics
 - Ensures scaling up/down depending on load
 
 ---
