@@ -176,8 +176,52 @@ Workers consult API Server to find master when initiating requests
 ---
 
 ## Services Overview
-- **ClusterIP** should be created for each service.
+Kubernetes Services expose a set of Pods as a network service.  
+There are four main types:
 
+---
+
+## 1. ClusterIP (Default)
+- Exposes the service **inside the cluster** only.
+- No external access.
+- Used for internal communication between microservices.
+
+---
+
+## 2. NodePort
+- Exposes the service on a **static port** (30000–32767) on each Node’s IP.
+- External traffic can access the service via:
+<NodeIP>:<NodePort>
+
+- Simple but **not production friendly**.
+
+---
+
+## 3. LoadBalancer
+- Exposes the service **externally using a cloud provider’s Load Balancer**.
+- Supported in AWS, GCP, Azure, etc.
+- Provides **public IP** for external access.
+- Commonly used in production.
+
+---
+
+## 4. ExternalName
+- Maps a service to an **external DNS name**.
+- Returns a `CNAME` record in DNS.
+- Useful to connect cluster services to external databases or APIs.
+
+---
+
+# Summary
+
+| Service Type   | Accessible From | Use Case |
+|----------------|-----------------|----------|
+| ClusterIP      | Internal only   | Service-to-service communication |
+| NodePort       | `<NodeIP>:Port` | Basic external access (testing) |
+| LoadBalancer   | Public IP       | Production external access |
+| ExternalName   | External DNS    | Connect to external services |
+
+- **ClusterIP** should be created for each service.
 ---
 
 ## Pod-to-Pod Communication
