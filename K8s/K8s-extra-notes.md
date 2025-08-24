@@ -126,3 +126,148 @@ Key Points :
 kubelet present on worker → knows how to talk to master
 
 Workers consult API Server to find master when initiating requests
+
+-----
+## Deployment (Deployment Controller)
+- Provides **zero downtime upgrade**
+- Controls Pods and ReplicaSets
+- Ensures Pods are created and updated without disruption
+
+### Example Flow
+1. Deployment → ReplicaSet → Pods  
+2. API Server watches Pods and maintains desired count  
+
+### Rolling Update
+- Adds new Pods → waits → deletes old Pods → continues until upgrade is done  
+- Ensures **no downtime**  
+
+---
+
+## DaemonSet
+- Ensures **a Pod runs on all nodes** in the cluster
+- Even if a new node is added → Pod gets created automatically
+- Example use cases:
+  - `kube-proxy`
+  - Monitoring agents (e.g., Prometheus node-exporter)
+
+---
+
+## Horizontal Pod Autoscaling (HPA)
+- Adjusts the **number of replicas** of an app based on CPU utilization or custom metrics
+- Ensures scaling up/down depending on load
+
+---
+
+## Vertical Pod Autoscaling (VPA)
+- Adjusts the **resources (CPU/RAM)** allocated to a Pod
+- Has a limit (e.g., 2GB or 3GB depending on setup)
+
+---
+
+## Cluster Autoscaler
+- When load increases beyond HPA limits → **Cluster Autoscaler (CA)** triggers
+- CA checks if cluster is reaching limits → adds/removes nodes automatically
+- Ensures workload is balanced across available nodes
+
+---
+
+# Kubernetes Services & Networking
+
+---
+
+## Services Overview
+- **ClusterIP** should be created for each service.
+
+---
+
+## Pod-to-Pod Communication
+
+### Q1: How do 2 containers in a pod talk to each other?
+- By **Kernel capability**
+- Any namespace can be attached to a number of processes.
+- Containers in the same pod share the same **network namespace**.
+
+---
+
+### Q2: How do containers (C2 & C5) talk by IP?
+- Pods are given **unique IP addresses**.
+- Containers in different pods can communicate via pod IPs.
+
+---
+
+### Q3: How do containers in different machines talk?
+- Each pod is connected via **CBR (Custom Bridge)** created by the network plugin.
+- All pods connect to CBR (default one).
+- If packet delivery fails → CBR sends traffic to the **network plugin**, which ensures correct delivery.
+
+---
+
+## Network Plugin
+- Each network plugin implements communication in its own way.
+- Example: Java has JVM; similarly Kubernetes has plugins like Calico, Flannel, Azure, etc.
+- K8s specifies the **spec**, but plugins provide actual implementation.
+- Hence, there are several algorithms.
+
+---
+
+## Service Communication
+
+### Q4: How does a pod talk to a service & pass messages?
+- **CBR → IP table**
+- `kube-proxy` on each node already knows services (rules are synced from master node).
+- Master node manages the service mappings.
+
+---
+
+## Encapsulation
+
+- **IP-in-IP algorithm** is used for cross-node pod-to-pod communication.
+- Plugins (e.g., **Calico, Flannel, Azure CNI**) have their own mechanisms.
+
+---
+Kubernetes DNS, StatefulSet, Ingress, and LoadBalancer
+
+---
+
+## DNS in Kubernetes
+- Found in `/etc/resolv.conf`
+- **CoreDNS (pod)** → runs as a deployment with 2 replicas
+- Provides **name resolution** inside the cluster.
+
+---
+
+## StatefulSet
+- Works **along with a Service**.
+- Maintains **state information**.
+- If an instance dies, it is recreated **on the same node** (if available).
+- If the node is unavailable, pod is recreated on another node with the same identity.
+- Example:
+  - Suppose there are pods P, S, T, D.
+  - If one pod crashes (say P), then **S will wait until P comes back** instead of replacing it.
+- Ensures **ordered & stable identity** for pods.
+
+---
+
+## Ingress
+- Provides **path-based routing** to services.
+- Ingress Controller decides which microservice to call.
+- Flow:  
+  **Path → Service → ClusterIP**
+- Example:
+  - Ingress routes requests to different services through **Load Balancer**.
+
+---
+
+## LoadBalancer
+- Provides **service discovery & traffic redirection**.
+- Useful when exposing a service to **external customers**.
+- Default: **Supported in cloud environments**.
+- Advantages:
+  - Directs traffic to multiple microservices.
+  - Handles multiple backend instances.
+- Disadvantages:
+  - Public IPs cost more.
+- Note:
+  - Ingress should be connected with the LoadBalancer.
+
+---
