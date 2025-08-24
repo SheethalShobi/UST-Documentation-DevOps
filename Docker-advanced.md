@@ -15,6 +15,8 @@ Independent
 
 Can have different OS running on the environment
 
+-------
+
 #### Docker Containers
 
 Containers do not have hypervisors.
