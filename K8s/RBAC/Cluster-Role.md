@@ -1,4 +1,5 @@
 # ClusterRole
+```
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
@@ -7,9 +8,10 @@ rules:
 - apiGroups: [""]
   resources: ["nodes"]
   verbs: ["get", "list", "watch", "update"]
-
+```
 ---
 # ClusterRoleBinding
+```
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
@@ -22,3 +24,4 @@ roleRef:
   kind: ClusterRole
   name: node-admin
   apiGroup: rbac.authorization.k8s.io
+```
