@@ -137,9 +137,4 @@ Blocks also include:
 
 ---
 
-## Types of Transformer Models (Summary)
-- **BERT** → Bidirectional, masked language model, understands context both ways.  
-- **GPT** → Autoregressive, predicts next token, great for text generation.  
-- **BART** → Mix of BERT + GPT (bidirectional encoder + autoregressive decoder).  
-- **Multimodal (ViLBERT, VisualBERT)** → Handle text + images together.  
-- **ViT (Vision Transformer)** → Uses patches as input sequence for image tasks.  
+
