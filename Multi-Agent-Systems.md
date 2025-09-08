@@ -1,7 +1,9 @@
-# Multi-Agent System (MAS) 
+# Multi-Agent Systems (MAS) 
 
 
-A **Multi-Agent System (MAS)** is a computational system where multiple agents interact with each other and with their environment to achieve their individual or collective goals. Unlike single-agent systems where only one agent makes decisions, in MAS, agents work by **cooperation, competition, or coordination**. It is widely used in complex, distributed, and dynamic problems that are too difficult for a single agent to solve alone.
+A **Multi-Agent System (MAS)** is a computational system where multiple agents interact with each other and with their environment to achieve their individual or collective goals. 
+- Unlike single-agent systems where only one agent makes decisions, in MAS, agents work by **cooperation, competition, or coordination**.
+- It is widely used in complex, distributed, and dynamic problems that are too difficult for a single agent to solve alone.
 
 ---
 
