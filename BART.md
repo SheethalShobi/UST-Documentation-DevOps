@@ -11,13 +11,6 @@
 
 ---
 
-## Masked Language Modeling
-Masked Language Modeling (MLM) is a training method where some words (tokens) in a sentence are hidden (masked), and the model learns to predict them using the surrounding context.  
-
-**Example:**  
-Input sentence: *I love eating [MASK] in the morning.*  
-Model predicts: *apples / bread / pancakes* based on context.  
-
 ---
 
 ## BART (Bidirectional and Auto-Regressive Transformer) Architecture
@@ -37,7 +30,6 @@ Model predicts: *apples / bread / pancakes* based on context.
 - Predicts tokens with multiple parallel masks.  
 - Examples:  
   - Whole sentence masked.  
-  - Multiple bigrams masked.  
   - Random words masked.  
 - Parallel masking avoids error accumulation.  
 
@@ -106,4 +98,6 @@ Model predicts: *apples / bread / pancakes* based on context.
 ## In Short
 - **BERT Encoder** = Creates context-rich embeddings (by masking + bi-directional attention).  
 - **GPT Decoder** = Sequentially predicts tokens from those embeddings (using autoregressive decoding).  
-- **Together in BART** → input corrupted text → output clean, coherent text.  
+- **Together in BART** → input corrupted text → output clean, coherent text.
+
+ ![comparison](images/comparison.png)
