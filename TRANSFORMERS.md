@@ -1,17 +1,18 @@
 # Transformers in Deep Learning
 
 ## Introduction
-Transformers are a type of neural network architecture that transforms or changes an input sequence into an output sequence. They do this by learning context and tracking relationships between sequence components. For example, consider this input sequence: 
+- Transformers are a type of neural network architecture that transforms or changes an input sequence into an output sequence. 
+- They do this by learning context and tracking relationships between sequence components. 
 
-Early deep learning models for natural language processing (NLP) tried to predict the next word based on the previous one.
+- Early deep learning models for natural language processing (NLP) tried to predict the next word based on the previous one.
 
-For example, your phone’s autocomplete suggests words based on frequent word pairs, like I am fine.
+- For example, your phone’s autocomplete suggests words based on frequent word pairs, like I am fine.
 
-Early machine learning (ML) models worked the same way, mapping word pair frequencies to guess the next word. But they couldn’t retain context for long inputs.
+- Early machine learning (ML) models worked the same way, mapping word pair frequencies to guess the next word. But they couldn’t retain context for long inputs.
 
-For instance, they couldn’t generate a meaningful paragraph because they lost the link between the first and last sentence. To say I am from Italy. I like horse riding. I speak Italian., the model needed to connect Italy with Italian, which older models couldn’t do.
+- For instance, they couldn’t generate a meaningful paragraph because they lost the link between the first and last sentence. 
 
-Transformer models solved this problem by handling long-range dependencies in text.
+- Transformer models solved this problem by handling long-range dependencies in text.
 
 They can:
 
@@ -24,16 +25,24 @@ They can:
 ## Key Benefits
 
 ### Enable large-scale models
-Transformers process entire sequences in parallel, reducing training and processing time. This made it possible to build large language models (LLMs) like GPT and BERT. These models have billions of parameters, capture complex language patterns, and push AI toward more generalizable systems.
+- Transformers process entire sequences in parallel, reducing training and processing time.
+-  This made it possible to build large language models (LLMs) like GPT and BERT.
+-  These models have billions of parameters, capture complex language patterns, and push AI toward more generalizable systems.
 
 ### Enable faster customization
-Transformers support techniques like transfer learning and retrieval-augmented generation (RAG). Models can be pretrained on massive datasets and fine-tuned on smaller, task-specific ones. This lowers resource needs, making advanced AI accessible to industries. They perform well across multiple domains and use cases.
+- Transformers support techniques like transfer learning and retrieval-augmented generation (RAG).
+- Models can be pretrained on massive datasets and fine-tuned on smaller, task-specific ones.
+- This lowers resource needs, making advanced AI accessible to industries.
+- They perform well across multiple domains and use cases.
 
 ### Facilitate multi-modal AI systems
-Transformers handle different data types together. For example, DALL·E generates images from text, combining NLP and computer vision. This enables AI systems that integrate diverse information and better mimic human understanding and creativity.
+- Transformers handle different data types together.
+- For example, DALL·E generates images from text, combining NLP and computer vision.
+- This enables AI systems that integrate diverse information and better mimic human understanding and creativity.
 
 ### Drive AI research and innovation
-Transformers sparked a new wave of AI research and applications. They inspired novel architectures, advanced machine understanding of language, and enabled real-world applications that improve customer experience and open business opportunities.
+- Transformers sparked a new wave of AI research and applications.
+- They inspired novel architectures, advanced machine understanding of language, and enabled real-world applications that improve customer experience and open business opportunities.
 
 ---
 
@@ -48,10 +57,12 @@ Transformers sparked a new wave of AI research and applications. They inspired n
 
 ## How Do Transformers Work?
 
-### Existing methods
+### The problem with existing methods
 Traditional neural networks that deal with data sequences often use an encoder/decoder architecture pattern. The encoder reads and processes the entire input data sequence, such as an English sentence, and transforms it into a compact mathematical representation. This representation is a summary that captures the essence of the input. Then, the decoder takes this summary and, step by step, generates the output sequence, which could be the same sentence translated into French.
 
 This process happens sequentially, which means that it has to process each word or part of the data one after the other. The process is slow and can lose some finer details over long distances.
+
+### Solution
 
 Transformer models modify this process by incorporating something called a self-attention mechanism. Instead of processing data in order, the mechanism enables the model to look at different parts of the sequence all at once and determine which parts are most important. 
 
@@ -102,8 +113,6 @@ Blocks also include:
 ### 2. Generative pretrained transformers (GPT)
 - Use stacked transformer decoders.  
 - Autoregressive: predict the next token based on all previous ones.  
-- Trained on massive datasets with billions of parameters.  
-- Generate coherent text, adapt style and tone, and power many AI applications.  
 
 ### 3. Bidirectional and autoregressive transformers (BART)
 - Combine BERT’s encoder (bidirectional) with GPT’s decoder (autoregressive).  
@@ -126,14 +135,12 @@ Blocks also include:
 ## Transformers vs. RNNs
 - RNNs: Process tokens one by one, use hidden state, good for short sequences, but slow and struggle with long dependencies.  
 - Transformers: Process full sequence in parallel, use self-attention + positional encoding, faster, scalable, handle long-range context better.  
-- Today: Transformers dominate NLP; RNNs used only when small size/efficiency is key.  
 
 ---
 
 ## Transformers vs. CNNs
 - CNNs: Best for grid data (images), capture local patterns with filters, efficient in vision tasks.  
 - Transformers: Built for sequences, now adapted for vision (ViT) by treating images as patch sequences.  
-- Today: CNNs still strong for vision; transformers gaining ground with global context.  
 
 ---
 
