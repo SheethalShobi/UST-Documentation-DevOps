@@ -48,6 +48,8 @@ They can:
 
 ## Transformers Use Cases
 
+![Transformer Applications](images/applications.png)
+
 - **NLP** – Summarize text, generate content, power assistants like Alexa.  
 - **Translation** – Provide fast, accurate real-time language translation.  
 - **DNA analysis** – Predict mutations, find disease regions, support personalized medicine.  
