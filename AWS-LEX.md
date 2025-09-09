@@ -43,10 +43,3 @@ Amazon Lex is a fully managed service from AWS that enables developers to build 
 
 ---
 
-## Getting Started
-
-1. **Sign In to AWS Console:** Access the Amazon Lex console at [https://console.aws.amazon.com/lex/](https://console.aws.amazon.com/lex/).
-2. **Create a New Bot:** Follow the guided setup to define your bot's name, language, and settings.
-3. **Define Intents and Slots:** Specify the user intents your bot should recognize and the necessary parameters.
-4. **Set Up Fulfillment:** Link your bot to AWS Lambda functions or other backend services to process intents.
-5. **Test and Deploy:** Use the test window to simulate conversations and deploy your bot to desired channels.
