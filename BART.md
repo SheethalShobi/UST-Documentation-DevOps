@@ -13,7 +13,7 @@
 
 ---
 
-## BART (Bidirectional and Auto-Regressive Transformer) Architecture
+##  Architecture
 
 - Encoder–Decoder model combining BERT (bidirectional encoder) and GPT (autoregressive decoder).  
 - Parameters: ~140M (larger than BERT’s 110M and GPT-1’s 117M) → but more powerful.  
