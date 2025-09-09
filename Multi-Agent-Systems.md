@@ -124,7 +124,6 @@ The structure defines how agents are arranged and coordinate actions:
 - **Scalability:** New agents can be added without major redesign.  
 - **Flexibility:** Handles dynamic and uncertain environments.  
 - **Efficiency:** Workload is distributed among multiple agents.  
-- **Emergent Intelligence:** Complex behavior emerges from simple interactions.
 
 ---
 
