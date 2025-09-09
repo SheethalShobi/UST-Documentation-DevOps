@@ -64,6 +64,9 @@ Traditional neural networks that deal with data sequences often use an encoder/d
 
 This process happens sequentially, which means that it has to process each word or part of the data one after the other. The process is slow and can lose some finer details over long distances.
 
+![intro](images/intro.png)
+
+
 ### Solution
 
 Transformer models modify this process by incorporating something called a self-attention mechanism. Instead of processing data in order, the mechanism enables the model to look at different parts of the sequence all at once and determine which parts are most important. 
