@@ -77,6 +77,8 @@ Imagine that you're in a busy room and trying to listen to someone talk. Your br
 
 ## Components of Transformer Architecture
 
+![Transformer Applications](images/transformer architecture.png) 
+
 ### Input embeddings
 - Converts input into numbers the model can process.  
 - Breaks input into tokens (e.g., words in a sentence).  
