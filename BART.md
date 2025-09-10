@@ -42,7 +42,7 @@
 - Process, store as weights, and pass information forward.  
 
 ---
-
+ ![comparison](images/bart-arch.png)
 ## BERT Encoder Cell
 
 ### Input processing
